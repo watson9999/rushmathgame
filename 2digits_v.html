@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vertical Math Game</title>
+    <title>Two Digits Vertical Math Game</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="#4682b4" />
@@ -158,7 +158,7 @@
             color: white;
             margin-top: 20px;
         }
-        #restartBtn3, #restartBtn4 {
+        #restartBtn3, #restartBtn4, #returnBtn3, #returnBtn4 {
             background: #ffd700;
             padding: 10px 24px;
             font-size: 1.2em;
@@ -200,9 +200,6 @@
             background-color: #ffe4e1;
             border-radius: 4px;
         }
-        #game4 div:nth-child(4) {
-            white-space: nowrap;
-        }
         @media (max-width: 600px) {
             .vertical-math {
                 font-size: 1.8em;
@@ -236,25 +233,17 @@
 </head>
 <body>
     <div style="text-align: right; margin-bottom: 10px">
-        🔊 <button id="soundToggle"><span id="soundToggle_en">Sound: On</span><span id="soundToggle_zh" style="display:none">音效: 開</span></button>  
-        🌐 <span id="langLabel_en">Language:</span><span id="langLabel_zh" style="display:none">語言:</span>
-        <select id="langSelect" style="font-size: 1em" aria-label="Select language">
-            <option value="en">English</option>
-            <option value="zh">繁體中文</option>
-        </select>
+        🔊 <button id="soundToggle"><span id="soundToggle_en">Sound: On</span><span id="soundToggle_zh" style="display:none">音效: 開</span></button>
     </div>
 
     <div id="gameSelection" class="container">
-        <h1>
-            <span id="selectTitle_en">Chan Sir's Vertical Math Game<img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="Chan Sir" style="vertical-align: middle; margin-left: 5px;" /></span>
-            <span id="selectTitle_zh" style="display:none">陳sir直式數學遊戲<img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="陳sir" style="vertical-align: middle; margin-left: 5px;" /></span>
-        </h1>
+        <h1><span id="selectTitle_en">Chan Sir's Two Digits Vertical Math Game<img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="Chan Sir" style="vertical-align: middle; margin-left: 5px;" /></span><span id="selectTitle_zh" style="display:none">陳sir2位數直式數學遊戲<img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="陳sir" style="vertical-align: middle; margin-left: 5px;" /></span></h1>
         <div class="category-title">
-            <span id="category2_en">Sum of 2 Digits Numbers - Vertical</span>
-            <span id="category2_zh" style="display:none">2位數相加 - 直式</span>
+            <span id="category2_en">Two Digits Addition (Vertical)</span>
+            <span id="category2_zh" style="display:none">2位數相加 (直式)</span>
         </div>
         <button id="gameSelectBtn3"><span id="game3Btn_en">Super Speedy Sums Splash (1 min)</span><span id="game3Btn_zh" style="display:none">超級快速加法遊戲 (1 分鐘)</span></button>
-        <button id="gameSelectBtn4"><span id="game4Btn_en">One Hundred Rush (to 100 points)</span><span id="game4Btn_zh" style="display:none">最快一百分 (到 100 分)</span></button>
+        <button id="gameSelectBtn4"><span id="game4Btn_en">One Hundred Rush</span><span id="game4Btn_zh" style="display:none">最快一百分</span></button>
     </div>
 
     <div id="game3" class="container" style="display:none;">
@@ -286,6 +275,7 @@
             <p id="noLeaderData3" style="display:none;color:var(--blue);"><span id="noLeaderData3_en">No leaderboard data available.</span><span id="noLeaderData3_zh" style="display:none">暫無排行榜數據。</span></p>
         </div>
         <button id="restartBtn3"><span id="restartBtn3_en">Play Again</span><span id="restartBtn3_zh" style="display:none">再玩一次</span></button>
+        <button id="returnBtn3"><span id="returnBtn3_en">Return to Menu</span><span id="returnBtn3_zh" style="display:none">返回目錄</span></button>
         <div id="pauseOverlay3" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10; text-align:center; color:white; font-size:2em; padding-top:20%;">
             <span id="pausedText3_en">Paused</span><span id="pausedText3_zh" style="display:none">已暫停</span><br>
             <button id="resumeBtn3">▶️ <span id="resumeBtn3_en">Resume</span><span id="resumeBtn3_zh" style="display:none">繼續</span></button>
@@ -323,6 +313,7 @@
             <p id="noLeaderData4" style="display:none;color:var(--blue);"><span id="noLeaderData4_en">No leaderboard data available.</span><span id="noLeaderData4_zh" style="display:none">暫無排行榜數據。</span></p>
         </div>
         <button id="restartBtn4"><span id="restartBtn4_en">Play Again</span><span id="restartBtn4_zh" style="display:none">再玩一次</span></button>
+        <button id="returnBtn4"><span id="returnBtn4_en">Return to Menu</span><span id="returnBtn4_zh" style="display:none">返回目錄</span></button>
         <div id="pauseOverlay4" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10; text-align:center; color:white; font-size:2em; padding-top:20%;">
             <span id="pausedText4_en">Paused</span><span id="pausedText4_zh" style="display:none">已暫停</span><br>
             <button id="resumeBtn4">▶️ <span id="resumeBtn4_en">Resume</span><span id="resumeBtn4_zh" style="display:none">繼續</span></button>
@@ -436,8 +427,8 @@
                 num1_3 = Math.floor(Math.random() * 90) + 10;
                 num2_3 = Math.floor(Math.random() * 90) + 10;
             } while (num1_3 + num2_3 > 99);
-            num1El3.textContent = num1_3.toString().padStart(3, ' ');
-            num2El3.textContent = "+ " + num2_3.toString().padStart(2, ' ');
+            num1El3.textContent = num1_3;
+            num2El3.textContent = num2_3;
             ansInp3.value = "";
             ansInp3.focus();
             fbk3.textContent = "";
@@ -563,10 +554,12 @@ function checkAnswer3(userAnswer) {
                             if (soundEnabled) q("#cheerSound").play();
                         }
                         q("#restartBtn3").style.display = "inline-block";
+                        q("#returnBtn3").style.display = "inline-block";
                     }).catch(error => {
                         console.error("Error saving score:", error);
                         fbk3.textContent = lang === "en" ? "Error saving to leaderboard." : "無法保存到排行榜。";
                         q("#restartBtn3").style.display = "inline-block";
+                        q("#returnBtn3").style.display = "inline-block";
                     });
                 }
             }, 1000);
@@ -585,6 +578,7 @@ function checkAnswer3(userAnswer) {
             leaderList3.innerHTML = "";
             noLeaderData3.style.display = "none";
             q("#restartBtn3").style.display = "none";
+            q("#returnBtn3").style.display = "none";
             q("#pauseOverlay3").style.display = "none";
             ansInp3.disabled = false;
             fbk3.textContent = "";
@@ -627,9 +621,10 @@ function checkAnswer3(userAnswer) {
             startTimer3();
         });
 
-        q("#restartBtn3").addEventListener("click", () => {
-            q("#gameSelection").style.display = "block";
-            q("#game3").style.display = "none";
+        q("#restartBtn3").addEventListener("click", startGame3);
+
+        q("#returnBtn3").addEventListener("click", () => {
+            window.location.href = 'mathgameindex.html';
         });
 
         const TARGET_SCORE4 = 100, CORRECT_POINTS4 = 3, WRONG_POINTS4 = -1;
@@ -656,8 +651,8 @@ function checkAnswer3(userAnswer) {
                 num1_4 = Math.floor(Math.random() * 90) + 10;
                 num2_4 = Math.floor(Math.random() * 90) + 10;
             } while (num1_4 + num2_4 > 99);
-            num1El4.textContent = num1_4.toString().padStart(3, ' ');
-            num2El4.textContent = "+ " + num2_4.toString().padStart(2, ' ');
+            num1El4.textContent = num1_4;
+            num2El4.textContent = num2_4;
             ansInp4.value = "";
             ansInp4.focus();
             fbk4.textContent = "";
@@ -687,10 +682,12 @@ function checkAnswer4(userAnswer) {
                             if (soundEnabled) q("#cheerSound").play();
                         }
                         q("#restartBtn4").style.display = "inline-block";
+                        q("#returnBtn4").style.display = "inline-block";
                     }).catch(error => {
                         console.error("Error saving time:", error);
                         fbk4.textContent = lang === "en" ? "Error saving to leaderboard." : "無法保存到排行榜。";
                         q("#restartBtn4").style.display = "inline-block";
+                        q("#returnBtn4").style.display = "inline-block";
                     });
                     return;
                 }
@@ -806,6 +803,7 @@ function checkAnswer4(userAnswer) {
             leaderList4.innerHTML = "";
             noLeaderData4.style.display = "none";
             q("#restartBtn4").style.display = "none";
+            q("#returnBtn4").style.display = "none";
             q("#pauseOverlay4").style.display = "none";
             ansInp4.disabled = false;
             fbk4.textContent = "";
@@ -848,9 +846,10 @@ function checkAnswer4(userAnswer) {
             startTimer4();
         });
 
-        q("#restartBtn4").addEventListener("click", () => {
-            q("#gameSelection").style.display = "block";
-            q("#game4").style.display = "none";
+        q("#restartBtn4").addEventListener("click", startGame4);
+
+        q("#returnBtn4").addEventListener("click", () => {
+            window.location.href = 'mathgameindex.html';
         });
 
         switchLang();

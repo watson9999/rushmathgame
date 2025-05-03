@@ -1,0 +1,160 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Math Game Directory</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f0f8ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            text-align: center;
+        }
+        h1 {
+            color: #ff6347;
+            margin: 0 0 20px;
+            font-size: 2.5rem;
+        }
+        .category {
+            margin: 20px 0;
+        }
+        .category h2 {
+            color: #4682b4;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        button {
+            cursor: pointer;
+            background: #ffd700;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 1.2em;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #ffca28;
+        }
+        #returnBtn {
+            display: none;
+            background: #32cd32;
+            color: white;
+            margin-top: 20px;
+        }
+        #returnBtn:hover {
+            background: #28a745;
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            .category h2 {
+                font-size: 1.5rem;
+            }
+            button {
+                font-size: 1.1em;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chan Sir's Math Games</h1>
+        <div class="category">
+            <h2>Single Digit Addition</h2>
+            <button onclick="loadGame('singledigit.html', 'Super Speedy Sums (1 min)', '最快一分鐘加法')">Super Speedy Sums (1 min)</button>
+            <button onclick="loadGame('singledigit.html', 'One Hundred Rush', '最快一百分')">One Hundred Rush</button>
+        </div>
+        <div class="category">
+            <h2>Two Digits Addition (Vertical)</h2>
+            <button onclick="loadGame('2digits_v.html', 'Super Speedy Sums Splash (1 min)', '超級快速加法遊戲 (1 分鐘)')">Super Speedy Sums Splash (1 min)</button>
+            <button onclick="loadGame('2digits_v.html', 'One Hundred Rush', '最快一百分')">One Hundred Rush</button>
+        </div>
+        <div class="category">
+            <h2>Two Digits Addition (Horizontal)</h2>
+            <button onclick="loadGame('2digits_h.html', 'Super Speedy Sums Splash (1 min)', '超級快速加法遊戲 (1 分鐘)')">Super Speedy Sums Splash (1 min)</button>
+            <button onclick="loadGame('2digits_h.html', 'One Hundred Rush', '最快一百分')">One Hundred Rush</button>
+        </div>
+        <button id="returnBtn" onclick="returnToMenu()">Return to Menu</button>
+    </div>
+
+    <script>
+        function loadGame(url, gameTitleEn, gameTitleZh) {
+            localStorage.setItem('gameTitleEn', gameTitleEn);
+            localStorage.setItem('gameTitleZh', gameTitleZh);
+            window.location.href = url;
+        }
+
+        function returnToMenu() {
+            window.location.href = 'mathgameindex.html';
+        }
+
+        // 檢查是否從遊戲返回，並顯示返回按鈕
+        window.onload = function() {
+            const gameTitleEn = localStorage.getItem('gameTitleEn');
+            const gameTitleZh = localStorage.getItem('gameTitleZh');
+            if (gameTitleEn || gameTitleZh) {
+                document.querySelector('.container h1').textContent = `Game Over: ${gameTitleEn || gameTitleZh}`;
+                document.getElementById('returnBtn').style.display = 'inline-block';
+                localStorage.removeItem('gameTitleEn');
+                localStorage.removeItem('gameTitleZh');
+            }
+        };
+    </script>
+</body>
+</html>
