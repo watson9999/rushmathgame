@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Two Digits Vertical Math Game</title>
+    <title>Vertical Math Game</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="#4682b4" />
@@ -69,27 +69,58 @@
             margin-bottom: 15px;
             font-size: 1.4em;
         }
+        /* --- Vertical Question Styles --- */
         .vertical-question {
+            font-size: 2.2em;
+            margin: 25px auto;
             color: var(--blue);
-            font-size: 2.4em;
-            margin-bottom: 10px;
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            row-gap: 0;
+            justify-content: center;
         }
-        .vertical-math {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
+
+        .vertical-question .grid-operator {
+            grid-column: 1;
+            text-align: left;
+            padding-right: 0.5em;
         }
-        .vertical-math div {
-            margin: 5px 0;
-        }
-        .vertical-math input[type="number"] {
-            width: 80px;
-            font-size: 1em;
-            padding: 5px;
-            border: 2px solid var(--green);
-            border-radius: 5px;
+
+        .vertical-question .grid-number {
+            grid-column: 2;
             text-align: right;
+            min-width: 50px;
+             font-family: monospace;
         }
+
+        .vertical-question hr.math-line {
+            grid-column: 1 / span 2;
+            border: 1px solid var(--blue);
+            width: 100%;
+            margin: 0.5em 0;
+        }
+         /* --- End Vertical Question Styles --- */
+
+
+        input[type="number"] {
+            font-size: 2.4em;
+            padding: 10px;
+            width: 120px;
+            text-align: center;
+            border: 2px solid var(--green);
+            border-radius: 8px;
+            margin: 5px;
+             grid-column: 2;
+             text-align: right;
+             font-family: monospace;
+        }
+
+        .vertical-math-container {
+             display: flex;
+             justify-content: center;
+             margin-bottom: 15px;
+        }
+
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
             -webkit-appearance: none;
@@ -98,6 +129,8 @@
         input[type=number] {
             -moz-appearance: textfield;
         }
+
+
         #feedback3, #feedback4 {
             font-size: 1.8em;
             min-height: 1.8em;
@@ -126,10 +159,6 @@
             font-size: 1.2em;
             margin: 5px;
         }
-        #gameSelectBtn3, #gameSelectBtn4 {
-            background: #ffd700;
-            white-space: nowrap;
-        }
         #mistakeBtn3, #leaderBtn3, #mistakeBtn4, #leaderBtn4 {
             background: #eee;
             margin: 0 4px;
@@ -144,7 +173,7 @@
             color: white;
             margin-top: 20px;
         }
-        #restartBtn3, #restartBtn4, #returnBtn3, #returnBtn4 {
+        #restartBtn3, #restartBtn4 {
             background: #ffd700;
             padding: 10px 24px;
             font-size: 1.2em;
@@ -155,12 +184,6 @@
             background: #87ceeb;
             padding: 5px 10px;
             font-size: 1em;
-        }
-        select {
-            padding: 5px;
-            font-size: 1em;
-            border-radius: 5px;
-            margin: 5px;
         }
         #mistakes3, #mistakes4 {
             text-align: left;
@@ -197,11 +220,15 @@
         }
         @media (max-width: 600px) {
             .vertical-question {
-                font-size: 1.8em;
+                font-size: 1.6em;
             }
-            .vertical-math input[type="number"] {
-                font-size: 0.8em;
-                width: 60px;
+             .vertical-question .grid-number,
+             .vertical-math-container input[type="number"] {
+                 min-width: 40px;
+             }
+            input[type="number"] {
+                font-size: 1.8em;
+                width: 100px;
             }
             h1 {
                 font-size: 1.6rem;
@@ -214,9 +241,6 @@
                 font-size: 1.1em;
                 margin: 8px;
             }
-            #gameSelectBtn3, #gameSelectBtn4 {
-                font-size: 1em;
-            }
             #mistakeBtn3, #leaderBtn3, #mistakeBtn4, #leaderBtn4, #pauseBtn3, #pauseBtn4 {
                 margin: 8px;
             }
@@ -224,45 +248,37 @@
                 font-size: 1.2em;
             }
         }
+         /* Initially hide game divs until mode is selected by JS */
+        #game3, #game4 {
+             display: none;
+        }
     </style>
 </head>
 <body>
     <div style="text-align: right; margin-bottom: 10px">
-        🔊 <button id="soundToggle"><span id="soundToggle_en">Sound: On</span><span id="soundToggle_zh" style="display:none">音效: 開</span></button>
-        <select id="langSelect">
+        🔊 <button id="soundToggle"><span id="soundToggle_en">Sound: On</span><span id="soundToggle_zh" style="display:none">音效: 開</span></button>  
+        🌐 <span id="langLabel_en">Language:</span><span id="langLabel_zh" style="display:none">語言:</span>
+        <select id="langSelect" style="font-size: 1em" aria-label="Select language">
             <option value="en">English</option>
-            <option value="zh">中文</option>
+            <option value="zh">繁體中文</option>
         </select>
     </div>
 
-    <div id="gameSelection" class="container">
-        <h1>
-            <span id="selectTitle_en">Chan Sir's Two Digits Vertical Math Game</span>
-            <span id="selectTitle_zh" style="display:none">陳sir2位數直式數學遊戲</span>
-            <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="Chan Sir" style="vertical-align: middle; margin-left: 5px;" />
-        </h1>
-        <div class="category-title">
-            <span id="category2_en">Two Digits Addition - Vertical</span>
-            <span id="category2_zh" style="display:none">2位數相加 - 直式</span>
-        </div>
-        <button id="gameSelectBtn3">
-            <span id="game3Btn_en">Super Speedy Sums Splash (1 min)</span>
-            <span id="game3Btn_zh" style="display:none">超級快速加法遊戲 (1 分鐘)</span>
-        </button>
-        <button id="gameSelectBtn4">
-            <span id="game4Btn_en">One Hundred Rush</span>
-            <span id="game4Btn_zh" style="display:none">最快一百分</span>
-        </button>
-    </div>
-<div id="game3" class="container" style="display:none;">
+    <div id="game3" class="container">
         <h1><span id="title3_en">Super Speedy Sums Splash!</span><span id="title3_zh" style="display:none">超級快速加法遊戲！</span></h1>
-        <div class="vertical-question" aria-live="polite" id="question3">
-            <span id="num1_3"></span><br>+ <span id="num2_3"></span><br>= <input type="number" id="answerInput3" min="0" max="99" autocomplete="off" />
+        <div class="vertical-math-container">
+             <div class="vertical-question" aria-live="polite" id="question3">
+                <span class="grid-operator"></span><span class="grid-number" id="num1_3"></span>
+                <span class="grid-operator">+</span><span class="grid-number" id="num2_3"></span>
+                <hr class="math-line">
+                <span class="grid-operator"></span><span class="grid-number" id="answer3"></span>
+             </div>
         </div>
+         <input type="number" id="answerInput3" min="0" max="99" autocomplete="off" />
         <div id="feedback3" aria-live="polite"></div>
         <div style="margin-top: 10px">
-            <span id="score3"><span id="scoreText3_en">Score: </span><span id="scoreText3_zh" style="display:none">得分: </span>0</span> &nbsp;
-            <span style="color:red">•</span> &nbsp;
+            <span id="score3"><span id="scoreText3_en">Score: </span><span id="scoreText3_zh" style="display:none">得分: </span>0</span>  
+            <span style="color:red">•</span>  
             <span id="highScore3"><span id="highScoreText3_en">High Score: </span><span id="highScoreText3_zh" style="display:none">最高分: </span>0</span>
         </div>
         <div id="timer3"><span id="timerText3_en">Time Left: </span><span id="timerText3_zh" style="display:none">剩餘時間：</span>60s</div>
@@ -278,22 +294,26 @@
             <p id="noLeaderData3" style="display:none;color:var(--blue);"><span id="noLeaderData3_en">No leaderboard data available.</span><span id="noLeaderData3_zh" style="display:none">暫無排行榜數據。</span></p>
         </div>
         <button id="restartBtn3"><span id="restartBtn3_en">Play Again</span><span id="restartBtn3_zh" style="display:none">再玩一次</span></button>
-        <button id="returnBtn3"><span id="returnBtn3_en">Return to Menu</span><span id="returnBtn3_zh" style="display:none">返回目錄</span></button>
         <div id="pauseOverlay3" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10; text-align:center; color:white; font-size:2em; padding-top:20%;">
             <span id="pausedText3_en">Paused</span><span id="pausedText3_zh" style="display:none">已暫停</span><br>
             <button id="resumeBtn3">▶️ <span id="resumeBtn3_en">Resume</span><span id="resumeBtn3_zh" style="display:none">繼續</span></button>
         </div>
     </div>
-
-    <div id="game4" class="container" style="display:none;">
+<div id="game4" class="container">
         <h1><span id="title4_en">One Hundred Rush</span><span id="title4_zh" style="display:none">最快一百分</span></h1>
-        <div class="vertical-question" aria-live="polite" id="question4">
-            <span id="num1_4"></span><br>+ <span id="num2_4"></span><br>= <input type="number" id="answerInput4" min="0" max="99" autocomplete="off" />
+        <div class="vertical-math-container">
+             <div class="vertical-question" aria-live="polite" id="question4">
+                <span class="grid-operator"></span><span class="grid-number" id="num1_4"></span>
+                <span class="grid-operator">+</span><span class="grid-number" id="num2_4"></span>
+                <hr class="math-line">
+                <span class="grid-operator"></span><span class="grid-number" id="answer4"></span>
+             </div>
         </div>
+         <input type="number" id="answerInput4" min="0" max="99" autocomplete="off" />
         <div id="feedback4" aria-live="polite"></div>
         <div style="margin-top: 10px">
-            <span id="score4"><span id="scoreText4_en">Score: </span><span id="scoreText4_zh" style="display:none">得分: </span>0</span> &nbsp;
-            <span style="color:red">•</span> &nbsp;
+            <span id="score4"><span id="scoreText4_en">Score: </span><span id="scoreText4_zh" style="display:none">得分: </span>0</span>  
+            <span style="color:red">•</span>  
             <span id="bestTime4"><span id="bestTimeText4_en">Best Time: </span><span id="bestTimeText4_zh" style="display:none">最佳時間: </span>–</span>
         </div>
         <div style="margin: 10px auto; width: 80%; background: #ddd; border-radius: 5px;">
@@ -312,39 +332,194 @@
             <p id="noLeaderData4" style="display:none;color:var(--blue);"><span id="noLeaderData4_en">No leaderboard data available.</span><span id="noLeaderData4_zh" style="display:none">暫無排行榜數據。</span></p>
         </div>
         <button id="restartBtn4"><span id="restartBtn4_en">Play Again</span><span id="restartBtn4_zh" style="display:none">再玩一次</span></button>
-        <button id="returnBtn4"><span id="returnBtn4_en">Return to Menu</span><span id="returnBtn4_zh" style="display:none">返回目錄</span></button>
         <div id="pauseOverlay4" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10; text-align:center; color:white; font-size:2em; padding-top:20%;">
             <span id="pausedText4_en">Paused</span><span id="pausedText4_zh" style="display:none">已暫停</span><br>
             <button id="resumeBtn4">▶️ <span id="resumeBtn4_en">Resume</span><span id="resumeBtn4_zh" style="display:none">繼續</span></button>
         </div>
     </div>
-function checkAnswer3(userAnswer) {
-            if (ansInp3.value.length < 2) return;
-            const correctAnswer = num1_3 + num2_3;
-            if (!isNaN(userAnswer) && userAnswer === correctAnswer) {
-                const correctEmojis = ['🐟', '✨', '🎉'];
-                const randomCorrect = correctEmojis[Math.floor(Math.random() * correctEmojis.length)];
-                fbk3.innerHTML = userAnswer + ' <span class="correct">✔' + randomCorrect + '</span>';
-                score3 += 3;
-                updateScore3();
-                playRandomCorrectSound();
-            } else {
-                const wrongEmojis = ['😵', '💦'];
-                const randomWrong = wrongEmojis[Math.floor(Math.random() * wrongEmojis.length)];
-                fbk3.innerHTML = userAnswer + ' <span class="incorrect">✘' + randomWrong + '</span>';
-                mistakes3.push({
-                    question: `${num1_3} + ${num2_3}`,
-                    userAnswer: userAnswer,
-                    correctAnswer: correctAnswer
-                });
-                score3 = Math.max(0, score3 - 1);
-                updateScore3();
+
+    <script>
+         // Shared Setup
+        // Initialize username immediately
+        const username = (() => {
+            let n = localStorage.getItem("username");
+            if (!n) {
+                 // Use default language 'en' if langSelect is not available yet, to avoid error
+                const lang = document.querySelector("#langSelect") ? document.querySelector("#langSelect").value : 'en';
+                n = prompt(lang === "en" ? "Your name?" : "請輸入你的名字：") || "Anonymous";
+                localStorage.setItem("username", n);
             }
-            setTimeout(generateQuestion3, 500);
+            return n;
+        })();
+
+        firebase.initializeApp({
+            apiKey: "AIzaSyB-qOLia1TQAeK3U_HrJZJ7M4ePlJkS2Ik",
+            authDomain: "speedsums-621b2.firebaseapp.com",
+            projectId: "speedsums-621b2", // Note: Firebase project ID should be correct here if different
+            storageBucket: "speedsums-621b2.appspot.com",
+            messagingSenderId: "812641533469",
+            appId: "1:812641533469:web:c3fe978e04f48cb3bf50f4"
+        });
+        const db = firebase.database();
+
+        const q = s => document.querySelector(s);
+
+        // Sound Toggle
+        let soundEnabled = true;
+        const soundToggleBtn = q("#soundToggle");
+         if (soundToggleBtn) {
+            soundToggleBtn.addEventListener("click", () => {
+                soundEnabled = !soundEnabled;
+                const lang = q("#langSelect") ? q("#langSelect").value : 'en';
+                soundToggleBtn.innerHTML = lang === "en" ?
+                    `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none">音效: ${soundEnabled ? "開" : "關"}</span>` :
+                    `<span id="soundToggle_en" style="display:none">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
+            });
         }
 
+
+        function playRandomCorrectSound() {
+            if (!soundEnabled) return;
+            const correctSounds = [
+                q("#okaySound"), q("#welldoneSound"), q("#correctSound"), q("#greatSound"),
+                q("#c1Sound"), q("#c2Sound"), q("#c3Sound"), q("#c4Sound"), q("#c5Sound"), q("#c6Sound")
+            ];
+            const randomSound = correctSounds[Math.floor(Math.random() * correctSounds.length)];
+             if (randomSound) {
+                 try { randomSound.currentTime = 0; randomSound.play(); } catch(e) { console.error("Sound playback error:", e); }
+             }
+        }
+
+        // Language Persistence
+        const langSelect = q("#langSelect");
+        const savedLang = localStorage.getItem("lang") || "en";
+        if (langSelect) {
+             langSelect.value = savedLang;
+        }
+
+
+        function switchLang() {
+            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
+            document.querySelectorAll("[id$='_en']").forEach(el => el.style.display = lang === "en" ? "inline" : "none");
+            document.querySelectorAll("[id$='_zh']").forEach(el => el.style.display = lang === "zh" ? "inline" : "none");
+
+            // Update specific elements that need language adjustments for Game 3
+            updateScore3();
+            updateHighScore3();
+            updateTimer3();
+            if (q("#mistakes3") && q("#mistakes3").style.display === "block") showMistakes3();
+            // No leaderboard refresh here, only on game end or button click
+            // if (q("#leaderboard3") && q("#leaderboard3").style.display === "block") refreshLeaderboard3();
+
+            // Update specific elements that need language adjustments for Game 4
+            updateScore4();
+            updateTimer4();
+            const bestEl4 = q("#bestTime4");
+             if(bestEl4) {
+                 bestEl4.innerHTML = `<span id="bestTimeText4_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Best Time: </span><span id="bestTimeText4_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最佳時間: </span>${bestTime4 ? bestTime4.toFixed(1) + ' s' : '–'}`;
+             }
+
+            if (q("#mistakes4") && q("#mistakes4").style.display === "block") showMistakes4();
+             // No leaderboard refresh here, only on game end or button click
+            // if (q("#leaderboard4") && q("#leaderboard4").style.display === "block") refreshLeaderboard4();
+
+
+            // Update sound toggle text
+            const soundToggleBtn = q("#soundToggle");
+            if (soundToggleBtn) {
+                soundToggleBtn.innerHTML = lang === "en" ?
+                    `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none">音效: ${soundEnabled ? "開" : "關"}</span>` :
+                    `<span id="soundToggle_en" style="display:none">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
+            }
+        }
+
+        if (langSelect) {
+             langSelect.addEventListener("change", () => {
+                 localStorage.setItem("lang", langSelect.value);
+                 switchLang();
+             });
+        }
+
+
+        // --- Game 3 Variables and Functions ---
+        let score3 = 0, timeLeft3 = 60, highScore3 = parseInt(localStorage.getItem("highScore3") || 0), timer3, mistakes3 = [], num1_3, num2_3, myLastScore3 = null;
+        let isPaused3 = false;
+        const num1El3 = q("#num1_3"), num2El3 = q("#num2_3"), ansInp3 = q("#answerInput3"), ansFld3 = q("#answer3"),
+              scoreEl3 = q("#score3"), timerEl3 = q("#timer3"), highScoreEl3 = q("#highScore3"), fbk3 = q("#feedback3"),
+              mistakesDiv3 = q("#mistakes3"), leaderDiv3 = q("#leaderboard3"), leaderList3 = q("#leaderList3"), noLeaderData3 = q("#noLeaderData3");
+
+        function updateScore3() {
+            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
+             if(scoreEl3) {
+                 scoreEl3.innerHTML = `<span id="scoreText3_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Score: </span><span id="scoreText3_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">得分: </span>${score3}`;
+             }
+        }
+
+        function updateHighScore3() {
+            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
+             if(highScoreEl3) {
+                 highScoreEl3.innerHTML = `<span id="highScoreText3_en" style="display:${lang === 'en' ? 'inline' : 'none'}">High Score: </span><span id="highScoreText3_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最高分: </span>${highScore3}`;
+             }
+        }
+
+        function updateTimer3() {
+            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
+             if(timerEl3) {
+                 timerEl3.innerHTML = `<span id="timerText3_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Time Left: </span><span id="timerText3_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">剩餘時間：</span>${timeLeft3}s`;
+             }
+        }
+
+        function generateQuestion3() {
+            do {
+                num1_3 = Math.floor(Math.random() * 90) + 10;
+                num2_3 = Math.floor(Math.random() * 90) + 10;
+            } while (num1_3 + num2_3 > 99);
+
+            if(num1El3) num1El3.textContent = num1_3.toString();
+            if(num2El3) num2El3.textContent = num2_3.toString();
+            const operatorEl = q("#question3 .grid-operator:nth-of-type(2)");
+             if(operatorEl) operatorEl.textContent = '+';
+
+
+            if (ansInp3) { ansInp3.value = ""; ansInp3.focus(); }
+            if (fbk3) fbk3.textContent = "";
+            if (ansFld3) ansFld3.textContent = "";
+        }
+
+        function checkAnswer3(userAnswer) {
+            if (!ansInp3 || ansInp3.value.length < 2) return;
+            const correctAnswer = num1_3 + num2_3;
+
+             ansInp3.value = "";
+
+            if (ansFld3) {
+                if (!isNaN(userAnswer) && userAnswer === correctAnswer) {
+                    const correctEmojis = ['🐟', '✨', '🎉'];
+                    const randomCorrect = correctEmojis[Math.floor(Math.random() * correctEmojis.length)];
+                    ansFld3.innerHTML = userAnswer + ' <span class="correct">✔' + randomCorrect + '</span>';
+                    score3 += 3;
+                    updateScore3();
+                    playRandomCorrectSound();
+                } else {
+                    const wrongEmojis = ['😵', '💦'];
+                    const randomWrong = wrongEmojis[Math.floor(Math.random() * wrongEmojis.length)];
+                    ansFld3.innerHTML = userAnswer + ' <span class="incorrect">✘' + randomWrong + '</span>';
+                    mistakes3.push({
+                        question: `${num1_3} + ${num2_3}`,
+                        userAnswer: userAnswer,
+                        correctAnswer: correctAnswer
+                    });
+                    score3 = Math.max(0, score3 - 1);
+                    updateScore3();
+                }
+            }
+             generateQuestion3();
+        }
+
+
         function showMistakes3() {
-            const lang = q("#langSelect").value;
+            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
+             if (!mistakesDiv3 || !leaderDiv3) return;
             mistakesDiv3.innerHTML = `<h3><span id="mistakesTitle3_en" style="display:${lang === 'en' ? 'block' : 'none'}">❌ Mistakes</span><span id="mistakesTitle3_zh" style="display:${lang === 'zh' ? 'block' : 'none'}">❌ 錯題</span></h3>`;
             if (mistakes3.length === 0) {
                 mistakesDiv3.innerHTML += `<p><span id="noMistakes3_en" style="display:${lang === 'en' ? 'block' : 'none'}">No mistakes! 🎉</span><span id="noMistakes3_zh" style="display:${lang === 'zh' ? 'block' : 'none'}">沒有錯誤！🎉</span></p>`;
@@ -360,75 +535,105 @@ function checkAnswer3(userAnswer) {
         }
 
         function refreshLeaderboard3() {
+             if (!leaderDiv3 || !leaderList3 || !noLeaderData3) return;
             db.ref("scores2").orderByChild("score").limitToLast(5).once("value").then(snap => {
                 const arr = [];
                 snap.forEach(ch => {
                     const val = ch.val();
                     if (val && val.name && typeof val.score === "number" && !isNaN(val.score) && val.timestamp) {
-                        arr.push(val);
+                        arr.push({ name: val.name, score: val.score, timestamp: val.timestamp });
                     }
                 });
 
-                const virtualData3 = [
+                 const virtualData3 = [
                     { name: "Alex", score: 60, timestamp: Date.now() - 1000 },
                     { name: "明", score: 52, timestamp: Date.now() - 2000 },
                     { name: "Kitty Chow", score: 45, timestamp: Date.now() - 3000 },
                     { name: "Tommy Lee", score: 38, timestamp: Date.now() - 4000 },
                     { name: "呀寶", score: 30, timestamp: Date.now() - 5000 }
                 ];
-                const neededEntries = 5 - arr.length;
-                if (neededEntries > 0) {
-                    arr.push(...virtualData3.slice(0, neededEntries));
-                }
+                 let combinedArr = [...arr];
+                 if (myLastScore3 !== null) {
+                     const userEntry = combinedArr.find(entry => entry.name === username && entry.score === myLastScore3);
+                     if (!userEntry) {
+                         combinedArr.push({ name: username, score: myLastScore3, timestamp: Date.now() });
+                     }
+                 }
 
-                arr.sort((a, b) => b.score - a.score || a.timestamp - b.timestamp);
-                if (arr.length === 0) {
-                    leaderList3.innerHTML = "";
-                    noLeaderData3.style.display = "block";
+                 combinedArr.sort((a, b) => b.score - a.score || a.timestamp - b.timestamp);
+
+                 const top5Map = new Map();
+                 for(const entry of combinedArr) {
+                      const key = `${entry.name}-${entry.score}`;
+                      if (!top5Map.has(key)) {
+                           top5Map.set(key, entry);
+                      }
+                      if (top5Map.size >= 5) break;
+                 }
+                 const top5Arr = Array.from(top5Map.values());
+
+
+                 const currentTopCount = top5Arr.length;
+                 if (currentTopCount < 5) {
+                     const virtualToAdd = virtualData3.filter(vEntry =>
+                         !top5Arr.some(rEntry => rEntry.name === vEntry.name && rEntry.score === vEntry.score)
+                     ).slice(0, 5 - currentTopCount);
+                     top5Arr.push(...virtualToAdd);
+                      top5Arr.sort((a, b) => b.score - a.score || a.timestamp - b.timestamp);
+                 }
+
+                if (top5Arr.length === 0) {
+                     if(leaderList3) leaderList3.innerHTML = "";
+                     if(noLeaderData3) noLeaderData3.style.display = "block";
                 } else {
-                    leaderList3.innerHTML = "";
+                     if(leaderList3) leaderList3.innerHTML = "";
                     const ranks = [];
                     let currentRank = 1;
-                    for (let i = 0; i < arr.length; i++) {
+                    for (let i = 0; i < top5Arr.length; i++) {
                         if (i === 0) {
                             ranks[i] = currentRank;
-                        } else if (arr[i].score === arr[i - 1].score) {
+                        } else if (top5Arr[i].score === top5Arr[i - 1].score) {
                             ranks[i] = ranks[i - 1];
                         } else {
                             ranks[i] = i + 1;
                             currentRank = i + 1;
                         }
                     }
-                    arr.slice(0, 5).forEach((entry, i) => {
-                        const li = document.createElement("li");
-                        const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "";
-                        li.textContent = `${ranks[i]}. ${entry.name} – ${entry.score} ${medal}`;
-                        if (entry.name === username && entry.score === myLastScore3) {
-                            li.classList.add("me");
-                        }
-                        leaderList3.appendChild(li);
+                    top5Arr.slice(0, 5).forEach((entry, i) => {
+                         if(leaderList3) {
+                            const li = document.createElement("li");
+                            const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "";
+                            li.textContent = `${ranks[i]}. ${entry.name} – ${entry.score} ${medal}`;
+                            if (entry.name === username && entry.score === myLastScore3 && myLastScore3 !== null) {
+                                li.classList.add("me");
+                            }
+                            leaderList3.appendChild(li);
+                         }
                     });
-                    noLeaderData3.style.display = "none";
+                     noLeaderData3.style.display = "none";
                 }
-                leaderDiv3.style.display = "block";
+                 if (leaderDiv3) leaderDiv3.style.display = "block";
             }).catch(error => {
                 console.error("Error fetching leaderboard:", error);
-                leaderList3.innerHTML = "";
-                noLeaderData3.style.display = "block";
+                 if(leaderList3) leaderList3.innerHTML = "";
+                 if(noLeaderData3) noLeaderData3.style.display = "block";
             });
         }
 
         function startTimer3() {
+             if (!timerEl3) return;
             timer3 = setInterval(() => {
                 if (isPaused3) return;
                 timeLeft3--;
                 updateTimer3();
-                if (timeLeft3 === 5 && soundEnabled) q("#countdownSound").play();
+                if (timeLeft3 === 5 && soundEnabled) {
+                     try { q("#countdownSound").currentTime = 0; q("#countdownSound").play(); } catch(e) { console.error("Countdown sound error:", e); }
+                }
                 if (timeLeft3 <= 0) {
                     clearInterval(timer3);
-                    const lang = q("#langSelect").value;
-                    fbk3.textContent = lang === "en" ? "Time's up! 🕒" : "時間到！🕒";
-                    ansInp3.disabled = true;
+                    const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
+                    if (fbk3) fbk3.textContent = lang === "en" ? "Time's up! 🕒" : "時間到！🕒";
+                    if (ansInp3) ansInp3.disabled = true;
                     myLastScore3 = score3;
                     db.ref("scores2").push({ name: username, score: score3, timestamp: Date.now() }).then(() => {
                         refreshLeaderboard3();
@@ -436,19 +641,26 @@ function checkAnswer3(userAnswer) {
                             highScore3 = score3;
                             localStorage.setItem("highScore3", highScore3);
                             updateHighScore3();
-                            if (soundEnabled) q("#cheerSound").play();
+                            if (soundEnabled) { try { q("#cheerSound").currentTime = 0; q("#cheerSound").play(); } catch(e) { console.error("Cheer sound error:", e); } }
                         }
-                        q("#restartBtn3").style.display = "inline-block";
-                        q("#returnBtn3").style.display = "inline-block";
+                        if (q("#restartBtn3")) q("#restartBtn3").style.display = "inline-block";
+                         if (mistakes3.length > 0) {
+                              showMistakes3();
+                         } else {
+                              refreshLeaderboard3();
+                         }
                     }).catch(error => {
                         console.error("Error saving score:", error);
-                        fbk3.textContent = lang === "en" ? "Error saving to leaderboard." : "無法保存到排行榜。";
-                        q("#restartBtn3").style.display = "inline-block";
-                        q("#returnBtn3").style.display = "inline-block";
+                        if (fbk3) fbk3.textContent = lang === "en" ? "Error saving to leaderboard." : "無法保存到排行榜。";
+                        if (q("#restartBtn3")) q("#restartBtn3").style.display = "inline-block";
+                         if (mistakes3.length > 0) {
+                              showMistakes3();
+                         }
                     });
                 }
             }, 1000);
         }
+
 
         function startGame3() {
             score3 = 0;
@@ -456,78 +668,127 @@ function checkAnswer3(userAnswer) {
             mistakes3 = [];
             myLastScore3 = null;
             isPaused3 = false;
+             clearInterval(timer3);
             updateScore3();
             updateTimer3();
-            mistakesDiv3.style.display = "none";
-            leaderDiv3.style.display = "none";
-            leaderList3.innerHTML = "";
-            noLeaderData3.style.display = "none";
-            q("#restartBtn3").style.display = "none";
-            q("#returnBtn3").style.display = "none";
-            q("#pauseOverlay3").style.display = "none";
-            ansInp3.disabled = false;
-            fbk3.textContent = "";
+             if(mistakesDiv3) mistakesDiv3.style.display = "none";
+             if(leaderDiv3) leaderDiv3.style.display = "none";
+             if(leaderList3) leaderList3.innerHTML = "";
+             if(noLeaderData3) noLeaderData3.style.display = "none";
+             if(q("#restartBtn3")) q("#restartBtn3").style.display = "none";
+             if(q("#pauseOverlay3")) q("#pauseOverlay3").style.display = "none";
+            if (ansInp3) ansInp3.disabled = false;
+            if (fbk3) fbk3.textContent = "";
             generateQuestion3();
             startTimer3();
+             if (ansInp3) ansInp3.focus();
         }
 
-        ansInp3.addEventListener("input", e => {
-            const val = parseInt(e.target.value, 10);
-            if (!isNaN(val)) checkAnswer3(val);
-        });
+        if (ansInp3) {
+             ansInp3.addEventListener("input", e => {
+                if (e.target.value.length > 2) {
+                    e.target.value = e.target.value.slice(0, 2);
+                }
+                const val = parseInt(e.target.value, 10);
+                if (e.target.value.length === 2 && !isNaN(val)) {
+                     checkAnswer3(val);
+                }
+            });
+             ansInp3.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") {
+                    const val = parseInt(ansInp3.value, 10);
+                     if (!isNaN(val)) {
+                          checkAnswer3(val);
+                     }
+                     e.preventDefault();
+                }
+             });
+        }
 
-        q("#mistakeBtn3").addEventListener("click", () => {
-            if (mistakesDiv3.style.display === "block") {
-                mistakesDiv3.style.display = "none";
-            } else {
-                showMistakes3();
-            }
-        });
+        if (q("#mistakeBtn3")) {
+             q("#mistakeBtn3").addEventListener("click", () => {
+                if (mistakesDiv3 && leaderDiv3) {
+                    if (mistakesDiv3.style.display === "block") {
+                        mistakesDiv3.style.display = "none";
+                    } else {
+                        showMistakes3();
+                        leaderDiv3.style.display = "none";
+                    }
+                }
+            });
+        }
 
-        q("#leaderBtn3").addEventListener("click", () => {
-            if (leaderDiv3.style.display === "block") {
-                leaderDiv3.style.display = "none";
-                noLeaderData3.style.display = "none";
-            } else {
-                refreshLeaderboard3();
-                mistakesDiv3.style.display = "none";
-            }
-        });
+        if (q("#leaderBtn3")) {
+            q("#leaderBtn3").addEventListener("click", () => {
+                if (leaderDiv3 && mistakesDiv3 && noLeaderData3) {
+                    if (leaderDiv3.style.display === "block") {
+                        leaderDiv3.style.display = "none";
+                        noLeaderData3.style.display = "none";
+                    } else {
+                        refreshLeaderboard3();
+                        mistakesDiv3.style.display = "none";
+                    }
+                }
+            });
+        }
 
-        q("#pauseBtn3").addEventListener("click", () => {
-            isPaused3 = true;
-            clearInterval(timer3);
-            q("#pauseOverlay3").style.display = "block";
-        });
+        if (q("#pauseBtn3")) {
+            q("#pauseBtn3").addEventListener("click", () => {
+                 const pauseOverlay = q("#pauseOverlay3");
+                 if (pauseOverlay && ansInp3) {
+                    isPaused3 = true;
+                    clearInterval(timer3);
+                    pauseOverlay.style.display = "block";
+                    ansInp3.disabled = true;
+                 }
+            });
+        }
 
-        q("#resumeBtn3").addEventListener("click", () => {
-            isPaused3 = false;
-            q("#pauseOverlay3").style.display = "none";
-            startTimer3();
-        });
+        if (q("#resumeBtn3")) {
+            q("#resumeBtn3").addEventListener("click", () => {
+                 const pauseOverlay = q("#pauseOverlay3");
+                 if (pauseOverlay && ansInp3) {
+                    isPaused3 = false;
+                    pauseOverlay.style.display = "none";
+                    startTimer3();
+                    ansInp3.disabled = false;
+                    ansInp3.focus();
+                 }
+            });
+        }
 
-        q("#restartBtn3").addEventListener("click", startGame3);
+        if (q("#restartBtn3")) {
+            q("#restartBtn3").addEventListener("click", () => {
+                 window.location.href = 'index.html';
+            });
+        }
 
-        q("#returnBtn3").addEventListener("click", () => {
-            window.location.href = 'mathgameindex.html';
-        });
-
+        // --- Game 4 Variables and Functions ---
         const TARGET_SCORE4 = 100, CORRECT_POINTS4 = 3, WRONG_POINTS4 = -1;
         let score4 = 0, timeUsed4 = 0, bestTime4 = parseFloat(localStorage.getItem("bestTime4")) || null, timer4, mistakes4 = [], num1_4, num2_4, myLastTime4 = null;
         let isPaused4 = false, gameStarted4 = false;
-        const num1El4 = q("#num1_4"), num2El4 = q("#num2_4"), ansInp4 = q("#answerInput4"),
+        const num1El4 = q("#num1_4"), num2El4 = q("#num2_4"), ansInp4 = q("#answerInput4"), ansFld4 = q("#answer4"),
               scoreEl4 = q("#score4"), timeEl4 = q("#timeUsed4"), bestEl4 = q("#bestTime4"), fbk4 = q("#feedback4"),
               progressBar4 = q("#progressBar4"), mistakesDiv4 = q("#mistakes4"), leaderDiv4 = q("#leaderboard4"),
               leaderList4 = q("#leaderList4"), noLeaderData4 = q("#noLeaderData4");
 
         function updateScore4() {
-            const lang = q("#langSelect").value;
-            scoreEl4.innerHTML = `<span id="scoreText4_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Score: </span><span id="scoreText4_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">得分: </span>${score4}`;
-            progressBar4.style.width = `${(score4 / TARGET_SCORE4) * 100}%`;
+            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
+            score4 = Math.max(0, score4);
+             if(scoreEl4) {
+                scoreEl4.innerHTML = `<span id="scoreText4_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Score: </span><span id="scoreText4_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">得分: </span>${score4}`;
+             }
+             if(progressBar4) {
+                 progressBar4.style.width = `${Math.min(100, (score4 / TARGET_SCORE4) * 100)}%`;
+                 progressBar4.style.backgroundColor = score4 >= TARGET_SCORE4 ? 'var(--green)' : 'var(--orange)';
+             }
         }
 
         function updateTimer4() {
-            const lang = q("#langSelect").value;
+             if (!timeEl4 || !gameStarted4) return;
+             const elapsed = isPaused4 ? timeUsed4 : (Date.now() - (startTime4 - timeUsed4 * 1000)) / 1000;
+             timeUsed4 = elapsed;
+            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
             timeEl4.innerHTML = `<span id="timeUsedText4_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Time Used: </span><span id="timeUsedText4_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">已用時間: </span>${timeUsed4.toFixed(1)} s`;
         }
 
@@ -536,63 +797,57 @@ function checkAnswer3(userAnswer) {
                 num1_4 = Math.floor(Math.random() * 90) + 10;
                 num2_4 = Math.floor(Math.random() * 90) + 10;
             } while (num1_4 + num2_4 > 99);
-            num1El4.textContent = num1_4;
-            num2El4.textContent = num2_4;
-            ansInp4.value = "";
-            ansInp4.focus();
-            fbk4.textContent = "";
-        }
-function checkAnswer4(userAnswer) {
-            if (ansInp4.value.length < 2) return;
-            const correctAnswer = num1_4 + num2_4;
-            if (!isNaN(userAnswer) && userAnswer === correctAnswer) {
-                const correctEmojis = ['🐟', '✨', '🎉'];
-                const randomCorrect = correctEmojis[Math.floor(Math.random() * correctEmojis.length)];
-                fbk4.innerHTML = userAnswer + ' <span class="correct">✔' + randomCorrect + '</span>';
-                score4 += CORRECT_POINTS4;
-                updateScore4();
-                playRandomCorrectSound();
-                if (score4 >= TARGET_SCORE4) {
-                    clearInterval(timer4);
-                    const lang = q("#langSelect").value;
-                    fbk4.textContent = lang === "en" ? "You did it! 🎉" : "你成功了！🎉";
-                    ansInp4.disabled = true;
-                    myLastTime4 = timeUsed4;
-                    db.ref("times2").push({ name: username, time: timeUsed4, timestamp: Date.now() }).then(() => {
-                        refreshLeaderboard4();
-                        if (!bestTime4 || timeUsed4 < bestTime4) {
-                            bestTime4 = timeUsed4;
-                            localStorage.setItem("bestTime4", bestTime4);
-                            bestEl4.innerHTML = `<span id="bestTimeText4_en">Best Time: </span><span id="bestTimeText4_zh" style="display:none">最佳時間: </span>${bestTime4.toFixed(2)} s`;
-                            if (soundEnabled) q("#cheerSound").play();
-                        }
-                        q("#restartBtn4").style.display = "inline-block";
-                        q("#returnBtn4").style.display = "inline-block";
-                    }).catch(error => {
-                        console.error("Error saving time:", error);
-                        fbk4.textContent = lang === "en" ? "Error saving to leaderboard." : "無法保存到排行榜。";
-                        q("#restartBtn4").style.display = "inline-block";
-                        q("#returnBtn4").style.display = "inline-block";
-                    });
-                    return;
-                }
-            } else {
-                const wrongEmojis = ['😵', '💦'];
-                const randomWrong = wrongEmojis[Math.floor(Math.random() * wrongEmojis.length)];
-                fbk4.innerHTML = userAnswer + ' <span class="incorrect">✘' + randomWrong + '</span>';
-                mistakes4.push({
-                    question: `${num1_4} + ${num2_4}`,
-                    userAnswer: userAnswer,
-                    correctAnswer: correctAnswer
-                });
-                score4 = Math.max(0, score4 + WRONG_POINTS4);
-                updateScore4();
-            }
-            setTimeout(generateQuestion4, 500);
+
+            if(num1El4) num1El4.textContent = num1_4.toString();
+            if(num2El4) num2El4.textContent = num2_4.toString();
+             const operatorEl = q("#question4 .grid-operator:nth-of-type(2)");
+              if(operatorEl) operatorEl.textContent = '+';
+
+            if (ansInp4) { ansInp4.value = ""; ansInp4.focus(); }
+            if (fbk4) fbk4.textContent = "";
+            if (ansFld4) ansFld4.textContent = "";
         }
 
+        function checkAnswer4(userAnswer) {
+             if (!ansInp4 || ansInp4.value.length < 2) return;
+            const correctAnswer = num1_4 + num2_4;
+
+             ansInp4.value = "";
+
+            if (ansFld4) {
+                if (!isNaN(userAnswer) && userAnswer === correctAnswer) {
+                    const correctEmojis = ['🐟', '✨', '🎉'];
+                    const randomCorrect = correctEmojis[Math.floor(Math.random() * correctEmojis.length)];
+                    ansFld4.innerHTML = userAnswer + ' <span class="correct">✔' + randomCorrect + '</span>';
+                    score4 += CORRECT_POINTS4;
+                    updateScore4();
+                    playRandomCorrectSound();
+                    if (score4 >= TARGET_SCORE4) {
+                        finishGame4();
+                        return;
+                    }
+                } else {
+                    const wrongEmojis = ['😵', '💦'];
+                    const randomWrong = wrongEmojis[Math.floor(Math.random() * wrongEmojis.length)];
+                    ansFld4.innerHTML = userAnswer + ' <span class="incorrect">✘' + randomWrong + '</span>';
+                    mistakes4.push({
+                        question: `${num1_4} + ${num2_4}`,
+                        userAnswer: userAnswer,
+                        correctAnswer: correctAnswer
+                    });
+                    score4 = Math.max(0, score4 + WRONG_POINTS4);
+                    updateScore4();
+                }
+            }
+             if (score4 < TARGET_SCORE4) {
+                 setTimeout(generateQuestion4, 500);
+             }
+        }
+
+
         function showMistakes4() {
-            const lang = q("#langSelect").value;
+            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
+             if (!mistakesDiv4 || !leaderDiv4) return;
             mistakesDiv4.innerHTML = `<h3><span id="mistakesTitle4_en" style="display:${lang === 'en' ? 'block' : 'none'}">❌ Mistakes</span><span id="mistakesTitle4_zh" style="display:${lang === 'zh' ? 'block' : 'none'}">❌ 錯題</span></h3>`;
             if (mistakes4.length === 0) {
                 mistakesDiv4.innerHTML += `<p><span id="noMistakes4_en" style="display:${lang === 'en' ? 'block' : 'none'}">No mistakes! 🎉</span><span id="noMistakes4_zh" style="display:${lang === 'zh' ? 'block' : 'none'}">沒有錯誤！🎉</span></p>`;
@@ -608,71 +863,127 @@ function checkAnswer4(userAnswer) {
         }
 
         function refreshLeaderboard4() {
+             if (!leaderDiv4 || !leaderList4 || !noLeaderData4) return;
             db.ref("times2").orderByChild("time").limitToFirst(5).once("value").then(snap => {
                 const arr = [];
                 snap.forEach(ch => {
                     const val = ch.val();
                     if (val && val.name && typeof val.time === "number" && !isNaN(val.time) && val.timestamp) {
-                        arr.push(val);
+                        arr.push({ name: val.name, time: val.time, timestamp: val.timestamp });
                     }
                 });
 
-                const virtualData4 = [
+                 const virtualData4 = [
                     { name: "Alex", time: 85.2, timestamp: Date.now() - 1000 },
                     { name: "明", time: 98.1, timestamp: Date.now() - 2000 },
                     { name: "Kitty Chow", time: 115.7, timestamp: Date.now() - 3000 },
                     { name: "Tommy Lee", time: 123.5, timestamp: Date.now() - 4000 },
                     { name: "呀寶", time: 159.7, timestamp: Date.now() - 5000 }
                 ];
-                const neededEntries = 5 - arr.length;
-                if (neededEntries > 0) {
-                    arr.push(...virtualData4.slice(0, neededEntries));
-                }
+                 let combinedArr = [...arr];
+                 if (myLastTime4 !== null) {
+                      const userEntry = combinedArr.find(entry => entry.name === username && entry.time === myLastTime4);
+                       if (!userEntry) {
+                           combinedArr.push({ name: username, time: myLastTime4, timestamp: Date.now() });
+                       }
+                 }
 
-                arr.sort((a, b) => a.time - b.time || a.timestamp - b.timestamp);
-                if (arr.length === 0) {
+                 combinedArr.sort((a, b) => a.time - b.time || a.ts - b.ts);
+
+                 const top5Map = new Map();
+                 for(const entry of combinedArr) {
+                      const key = `${entry.name}-${entry.time}`;
+                      if (!top5Map.has(key)) {
+                           top5Map.set(key, entry);
+                      }
+                      if (top5Map.size >= 5) break;
+                 }
+                 const top5Arr = Array.from(top5Map.values());
+
+
+                 const currentTopCount = top5Arr.length;
+                 if (currentTopCount < 5) {
+                     const virtualToAdd = virtualData4.filter(vEntry =>
+                         !top5Arr.some(rEntry => rEntry.name === vEntry.name && rEntry.time === vEntry.time)
+                     ).slice(0, 5 - currentTopCount);
+                     top5Arr.push(...virtualToAdd);
+                     top5Arr.sort((a, b) => a.time - b.time || a.ts - b.ts);
+                 }
+
+
+                if (top5Arr.length === 0) {
                     leaderList4.innerHTML = "";
                     noLeaderData4.style.display = "block";
                 } else {
-                    leaderList4.innerHTML = "";
+                     leaderList4.innerHTML = "";
                     const ranks = [];
                     let currentRank = 1;
-                    for (let i = 0; i < arr.length; i++) {
+                    for (let i = 0; i < top5Arr.length; i++) {
                         if (i === 0) {
                             ranks[i] = currentRank;
-                        } else if (arr[i].time === arr[i - 1].time) {
+                        } else if (top5Arr[i].time === top5Arr[i - 1].time) {
                             ranks[i] = ranks[i - 1];
                         } else {
                             ranks[i] = i + 1;
                             currentRank = i + 1;
                         }
                     }
-                    arr.slice(0, 5).forEach((entry, i) => {
-                        const li = document.createElement("li");
-                        const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "";
-                        li.textContent = `${ranks[i]}. ${entry.name} – ${entry.time.toFixed(1)}s ${medal}`;
-                        if (entry.name === username && entry.time === myLastTime4) {
-                            li.classList.add("me");
-                        }
-                        leaderList4.appendChild(li);
+
+                    top5Arr.slice(0, 5).forEach((entry, i) => {
+                        if(leaderList4) {
+                            const li = document.createElement("li");
+                            const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "";
+                            li.textContent = `${ranks[i]}. ${entry.name} – ${entry.time.toFixed(1)}s ${medal}`;
+                            if (entry.name === username && entry.time === myLastTime4 && myLastTime4 !== null) {
+                                li.classList.add("me");
+                            }
+                            leaderList4.appendChild(li);
+                         }
                     });
                     noLeaderData4.style.display = "none";
                 }
-                leaderDiv4.style.display = "block";
+                 if (leaderDiv4) leaderDiv4.style.display = "block";
             }).catch(error => {
                 console.error("Error fetching leaderboard:", error);
-                leaderList4.innerHTML = "";
-                noLeaderData4.style.display = "block";
+                 if(leaderList4) leaderList4.innerHTML = "";
+                 if(noLeaderData4) noLeaderData4.style.display = "block";
             });
         }
 
-        function startTimer4() {
-            timer4 = setInterval(() => {
-                if (isPaused4) return;
-                timeUsed4 += 0.1;
-                updateTimer4();
-            }, 100);
+
+        function finishGame4() {
+             if (!timeUsed4 || !fbk4 || !ansInp4 || !q("#restartBtn4")) return;
+            clearInterval(timer4);
+            ansInp4.disabled = true;
+            const tSec = timeUsed4.toFixed(1);
+            myLastTime4 = parseFloat(tSec);
+            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
+            fbk4.innerHTML = `<span style="color:var(--orange);font-size:1.4em">${lang === 'en' ? 'Finished in' : '完成時間'}: ${tSec} s</span>`;
+            q("#restartBtn4").style.display = "inline-block";
+            if (!bestTime4 || myLastTime4 < bestTime4) {
+                bestTime4 = myLastTime4;
+                localStorage.setItem("bestTime4", bestTime4);
+                 if(bestEl4) {
+                     bestEl4.innerHTML = `<span id="bestTimeText4_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Best Time: </span><span id="bestTimeText4_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最佳時間: </span>${bestTime4.toFixed(1)} s`;
+                 }
+                if (soundEnabled) { try { q("#cheerSound").currentTime = 0; q("#cheerSound").play(); } catch(e) { console.error("Cheer sound error:", e); } }
+            }
+            db.ref("times2").push({ name: username, time: parseFloat(tSec), timestamp: Date.now() }).then(() => {
+                refreshLeaderboard4();
+                 if (mistakes4.length > 0) {
+                      showMistakes4();
+                 } else {
+                      refreshLeaderboard4();
+                 }
+            }).catch(error => {
+                console.error("Error saving time:", error);
+                fbk4.innerHTML += `<br><span style="color:var(--red)">${lang === 'en' ? 'Error saving to leaderboard.' : '無法保存到排行榜。'}</span>`;
+                 if (mistakes4.length > 0) {
+                      showMistakes4();
+                 }
+            });
         }
+
 
         function startGame4() {
             score4 = 0;
@@ -683,73 +994,155 @@ function checkAnswer4(userAnswer) {
             gameStarted4 = true;
             updateScore4();
             updateTimer4();
-            mistakesDiv4.style.display = "none";
-            leaderDiv4.style.display = "none";
-            leaderList4.innerHTML = "";
-            noLeaderData4.style.display = "none";
-            q("#restartBtn4").style.display = "none";
-            q("#returnBtn4").style.display = "none";
-            q("#pauseOverlay4").style.display = "none";
-            ansInp4.disabled = false;
-            fbk4.textContent = "";
-            generateQuestion4();
-            startTimer4();
-        }
-
-        ansInp4.addEventListener("input", e => {
-            const val = parseInt(e.target.value, 10);
-            if (!isNaN(val)) checkAnswer4(val);
-        });
-
-        q("#mistakeBtn4").addEventListener("click", () => {
-            if (mistakesDiv4.style.display === "block") {
-                mistakesDiv4.style.display = "none";
-            } else {
-                showMistakes4();
-            }
-        });
-
-        q("#leaderBtn4").addEventListener("click", () => {
-            if (leaderDiv4.style.display === "block") {
-                leaderDiv4.style.display = "none";
-                noLeaderData4.style.display = "none";
-            } else {
-                refreshLeaderboard4();
-                mistakesDiv4.style.display = "none";
-            }
-        });
-
-        q("#pauseBtn4").addEventListener("click", () => {
-            isPaused4 = true;
+             if(mistakesDiv4) mistakesDiv4.style.display = "none";
+             if(leaderDiv4) leaderDiv4.style.display = "none";
+             if(leaderList4) leaderList4.innerHTML = "";
+             if(noLeaderData4) noLeaderData4.style.display = "none";
+             if(q("#restartBtn4")) q("#restartBtn4").style.display = "none";
+             if(q("#pauseOverlay4")) q("#pauseOverlay4").style.display = "none";
+            if (ansInp4) ansInp4.disabled = false;
+            if (fbk4) fbk4.textContent = "";
+            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
+             if(bestEl4) {
+                bestEl4.innerHTML = `<span id="bestTimeText4_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Best Time: </span><span id="bestTimeText4_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最佳時間: </span>${bestTime4 ? bestTime4.toFixed(1) + ' s' : '–'}`;
+             }
+            startTime4 = Date.now();
             clearInterval(timer4);
-            q("#pauseOverlay4").style.display = "block";
-        });
-
-        q("#resumeBtn4").addEventListener("click", () => {
-            isPaused4 = false;
-            q("#pauseOverlay4").style.display = "none";
-            startTimer4();
-        });
-
-        q("#restartBtn4").addEventListener("click", startGame4);
-
-        q("#returnBtn4").addEventListener("click", () => {
-            window.location.href = 'mathgameindex.html';
-        });
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const gameMode = urlParams.get('game');
-        if (gameMode === '3') {
-            q("#gameSelection").style.display = "none";
-            q("#game3").style.display = "block";
-            startGame3();
-        } else if (gameMode === '4') {
-            q("#gameSelection").style.display = "none";
-            q("#game4").style.display = "block";
-            startGame4();
+             timer4 = setInterval(() => {
+                if (!isPaused4) updateTimer4();
+            }, 100);
+            generateQuestion4();
+             if (ansInp4) ansInp4.focus();
         }
+
+
+        if (ansInp4) {
+            ansInp4.addEventListener("input", e => {
+                 if (e.target.value.length > 2) {
+                    e.target.value = e.target.value.slice(0, 2);
+                }
+                const val = parseInt(e.target.value, 10);
+                if (e.target.value.length === 2 && !isNaN(val)) {
+                     checkAnswer4(val);
+                }
+            });
+             ansInp4.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") {
+                    const val = parseInt(ansInp4.value, 10);
+                     if (!isNaN(val)) {
+                          checkAnswer4(val);
+                     }
+                     e.preventDefault();
+                }
+             });
+        }
+
+
+        if (q("#mistakeBtn4")) {
+             q("#mistakeBtn4").addEventListener("click", () => {
+                if (mistakesDiv4 && leaderDiv4) {
+                    if (mistakesDiv4.style.display === "block") {
+                        mistakesDiv4.style.display = "none";
+                    } else {
+                        showMistakes4();
+                        leaderDiv4.style.display = "none";
+                    }
+                }
+            });
+        }
+
+        if (q("#leaderBtn4")) {
+             q("#leaderBtn4").addEventListener("click", () => {
+                 if (leaderDiv4 && mistakesDiv4 && noLeaderData4) {
+                    if (leaderDiv4.style.display === "block") {
+                        leaderDiv4.style.display = "none";
+                        noLeaderData4.style.display = "none";
+                    } else {
+                        refreshLeaderboard4();
+                        mistakesDiv4.style.display = "none";
+                    }
+                }
+            });
+        }
+
+        if (q("#pauseBtn4")) {
+            q("#pauseBtn4").addEventListener("click", () => {
+                const pauseOverlay = q("#pauseOverlay4");
+                 if (pauseOverlay && ansInp4) {
+                    isPaused4 = true;
+                    clearInterval(timer4);
+                    pauseOverlay.style.display = "block";
+                    ansInp4.disabled = true;
+                 }
+            });
+        }
+
+        if (q("#resumeBtn4")) {
+            q("#resumeBtn4").addEventListener("click", () => {
+                 const pauseOverlay = q("#pauseOverlay4");
+                 if (pauseOverlay && ansInp4) {
+                    isPaused4 = false;
+                    pauseOverlay.style.display = "none";
+                    startTime4 = Date.now() - timeUsed4 * 1000;
+                     timer4 = setInterval(() => {
+                         if (!isPaused4) updateTimer4();
+                     }, 100);
+                    ansInp4.disabled = false;
+                    ansInp4.focus();
+                 }
+            });
+        }
+
+        if (q("#restartBtn4")) {
+            q("#restartBtn4").addEventListener("click", () => {
+                 window.location.href = 'index.html';
+            });
+        }
+
+
+        // --- Initialisation based on URL Hash ---
+        // Find the game divs
+        const game3Div = q("#game3");
+        const game4Div = q("#game4");
+
+        // Function: Hide all game divs initially
+        function hideAllGames() {
+            if(game3Div) game3Div.style.display = 'none';
+            if(game4Div) game4Div.style.display = 'none';
+        }
+
+        // Function: Start game based on mode from URL hash
+        function startGameByMode() {
+            hideAllGames();
+
+            const hash = window.location.hash;
+
+            if (hash === '#mode=1min') {
+                if(game3Div) game3Div.style.display = 'block';
+                startGame3();
+            } else if (hash === '#mode=100pts') {
+                 if(game4Div) game4Div.style.display = 'block';
+                startGame4();
+            } else {
+                 console.warn("No valid game mode specified in URL hash. Redirecting to index.html");
+                 window.location.href = 'index.html';
+            }
+            if(game3Div && game3Div.style.display === 'block') {
+                const ansInput3 = q("#answerInput3");
+                if (ansInput3) ansInput3.focus();
+            }
+            if(game4Div && game4Div.style.display === 'block') {
+                 const ansInput4 = q("#answerInput4");
+                 if (ansInput4) ansInput4.focus();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', startGameByMode);
 
         switchLang();
+
+        hideAllGames();
+
     </script>
 </body>
 </html>

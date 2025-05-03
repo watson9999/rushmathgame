@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>陳sir數學遊戲中心</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#4682b4" />
+    <link rel="manifest" href="manifest.json" />
+
+    <style>
+        :root {
+            --blue: #4682b4;
+            --green: #32cd32;
+            --red: #ff4500;
+            --orange: #ff9a00;
+            --purple: #8a2be2;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f0f8ff url("https://cdn.pixabay.com/photo/2021/05/20/12/51/fish-6269836_1280.png") no-repeat bottom right / 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: #fff;
+            padding: 30px 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+        }
+        h1 {
+            color: #ff6347;
+            margin: 0 0 10px; /* Adjusted margin */
+            font-size: 2.2rem; /* Adjusted font size */
+        }
+         h1 img {
+             vertical-align: middle;
+             margin-left: 8px;
+             height: 40px; /* Ensure image size is appropriate */
+         }
+        .game-category {
+            background-color: var(--purple); /* New color for categories */
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 20px; /* Space above category */
+            margin-bottom: 10px; /* Space below category */
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .game-button {
+            display: block; /* Make buttons take full width */
+            cursor: pointer;
+            border: none;
+            border-radius: 8px; /* Slightly larger border radius */
+            padding: 12px 20px; /* Adjusted padding */
+            font-size: 1.3em; /* Adjusted font size */
+            margin: 10px auto; /* Center buttons and add vertical space */
+            width: 90%; /* Make buttons wide */
+            max-width: 400px; /* Max width for larger screens */
+            background: var(--orange); /* Button color */
+            color: white;
+            text-decoration: none; /* Remove underline from link */
+            text-align: center;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+        .game-button:hover {
+            background-color: #ff7f50; /* Darker orange on hover */
+        }
+        .game-button:active {
+             background-color: #e65a33; /* Even darker when clicked */
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            h1 img {
+                 height: 30px;
+            }
+            .container {
+                padding: 20px 15px;
+            }
+             .game-category {
+                 font-size: 1.3em;
+             }
+            .game-button {
+                font-size: 1.1em;
+                padding: 10px 15px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>
+            陳sir數學遊戲中心
+            <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="陳sir" />
+        </h1>
+        <p>請選擇你想玩的遊戲：</p>
+
+        <div class="game-category">個位數加法</div>
+        <a href="singledigit.html#mode=1min" class="game-button">超級快速加法遊戲 (1 分鐘)</a>
+        <a href="singledigit.html#mode=100pts" class="game-button">最快一百分 (到 100 分)</a>
+
+        <div class="game-category">兩位數加法 (橫式)</div>
+        <a href="2digits_h.html#mode=1min" class="game-button">超級快速加法遊戲 (1 分鐘)</a>
+        <a href="2digits_h.html#mode=100pts" class="game-button">最快一百分 (到 100 分)</a>
+
+        <div class="game-category">兩位數加法 (直式)</div>
+        <a href="2digits_v.html#mode=1min" class="game-button">超級快速加法遊戲 (1 分鐘)</a>
+        <a href="2digits_v.html#mode=100pts" class="game-button">最快一百分 (到 100 分)</a>
+
+    </div>
+
+</body>
+</html>
