@@ -91,7 +91,7 @@
         input[type=number] {
             -moz-appearance: textfield;
         }
-        #feedback3, #feedback4 {
+        #feedback1, #feedback2 {
             font-size: 1.8em;
             min-height: 1.8em;
             margin-top: 20px;
@@ -102,11 +102,11 @@
         .incorrect {
             color: var(--red);
         }
-        #score3, #highScore3, #timer3, #score4, #bestTime4, #timeUsed4 {
+        #score1, #highScore1, #timer1, #score2, #bestTime2, #timeUsed2 {
             font-size: 1.6em;
             color: var(--blue);
         }
-        #timer3, #timeUsed4 {
+        #timer1, #timeUsed2 {
             font-size: 1.9em;
             color: var(--orange);
             margin: 10px 0 0;
@@ -119,25 +119,25 @@
             font-size: 1.2em;
             margin: 5px;
         }
-        #gameSelectBtn3, #gameSelectBtn4 {
+        #gameSelectBtn1, #gameSelectBtn2 {
             background: #ffd700;
             white-space: nowrap;
         }
-        #mistakeBtn3, #leaderBtn3, #mistakeBtn4, #leaderBtn4 {
+        #mistakeBtn1, #leaderBtn1, #mistakeBtn2, #leaderBtn2 {
             background: #eee;
             margin: 0 4px;
         }
-        #pauseBtn3, #pauseBtn4 {
+        #pauseBtn1, #pauseBtn2 {
             background: #ff6347;
             color: white;
             margin: 0 4px;
         }
-        #resumeBtn3, #resumeBtn4 {
+        #resumeBtn1, #resumeBtn2 {
             background: #32cd32;
             color: white;
             margin-top: 20px;
         }
-        #restartBtn3, #restartBtn4, #returnBtn3, #returnBtn4 {
+        #restartBtn1, #restartBtn2, #returnBtn1, #returnBtn2 {
             background: #ffd700;
             padding: 10px 24px;
             font-size: 1.2em;
@@ -149,35 +149,44 @@
             padding: 5px 10px;
             font-size: 1em;
         }
-        #mistakes3, #mistakes4 {
+        select {
+            padding: 5px;
+            font-size: 1em;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        #mistakes1, #mistakes2 {
             text-align: left;
             margin-top: 25px;
             font-size: 1.4em;
         }
-        #mistakes3 .wrong, #mistakes4 .wrong {
+        #mistakes1 .wrong, #mistakes2 .wrong {
             color: var(--red);
         }
-        #mistakes3 .correct, #mistakes4 .correct {
+        #mistakes1 .correct, #mistakes2 .correct {
             color: var(--green);
         }
-        #leaderboard3, #leaderboard4 {
+        #leaderboard1, #leaderboard2 {
             margin-top: 20px;
             display: none;
         }
-        #leaderboard3 ol, #leaderboard4 ol {
+        #leaderboard1 ol, #leaderboard2 ol {
             padding-left: 20px;
             margin: 8px 0;
             list-style-type: none;
         }
-        #leaderboard3 li, #leaderboard4 li {
+        #leaderboard1 li, #leaderboard2 li {
             color: var(--blue);
             padding: 5px;
         }
-        #leaderboard3 li.me, #leaderboard4 li.me {
+        #leaderboard1 li.me, #leaderboard2 li.me {
             color: var(--red);
             font-weight: bold;
             background-color: #ffe4e1;
             border-radius: 4px;
+        }
+        #game2 div:nth-child(4) {
+            white-space: nowrap;
         }
         @media (max-width: 600px) {
             .horizontal-question {
@@ -198,13 +207,13 @@
                 font-size: 1.1em;
                 margin: 8px;
             }
-            #gameSelectBtn3, #gameSelectBtn4 {
+            #gameSelectBtn1, #gameSelectBtn2 {
                 font-size: 1em;
             }
-            #mistakeBtn3, #leaderBtn3, #mistakeBtn4, #leaderBtn4, #pauseBtn3, #pauseBtn4 {
+            #mistakeBtn1, #leaderBtn1, #mistakeBtn2, #leaderBtn2, #pauseBtn1, #pauseBtn2 {
                 margin: 8px;
             }
-            #score4, #bestTime4 {
+            #score2, #bestTime2 {
                 font-size: 1.2em;
             }
         }
@@ -213,85 +222,98 @@
 <body>
     <div style="text-align: right; margin-bottom: 10px">
         🔊 <button id="soundToggle"><span id="soundToggle_en">Sound: On</span><span id="soundToggle_zh" style="display:none">音效: 開</span></button>
+        <select id="langSelect">
+            <option value="en">English</option>
+            <option value="zh">中文</option>
+        </select>
     </div>
 
     <div id="gameSelection" class="container">
-        <h1><span id="selectTitle_en">Chan Sir's Single Digit Math Game<img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="Chan Sir" style="vertical-align: middle; margin-left: 5px;" /></span><span id="selectTitle_zh" style="display:none">陳sir個位數數學遊戲<img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="陳sir" style="vertical-align: middle; margin-left: 5px;" /></span></h1>
+        <h1>
+            <span id="selectTitle_en">Chan Sir's Single Digit Math Game</span>
+            <span id="selectTitle_zh" style="display:none">陳sir個位數數學遊戲</span>
+            <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="Chan Sir" style="vertical-align: middle; margin-left: 5px;" />
+        </h1>
         <div class="category-title">
-            <span id="category2_en">Single Digit Addition</span>
-            <span id="category2_zh" style="display:none">個位數相加</span>
+            <span id="category1_en">Single Digit Addition</span>
+            <span id="category1_zh" style="display:none">個位數相加</span>
         </div>
-        <button id="gameSelectBtn3"><span id="game3Btn_en">Super Speedy Sums (1 min)</span><span id="game3Btn_zh" style="display:none">最快一分鐘加法</span></button>
-        <button id="gameSelectBtn4"><span id="game4Btn_en">One Hundred Rush</span><span id="game4Btn_zh" style="display:none">最快一百分</span></button>
+        <button id="gameSelectBtn1">
+            <span id="game1Btn_en">Super Speedy Sums Splash (1 min)</span>
+            <span id="game1Btn_zh" style="display:none">超級快速加法遊戲 (1 分鐘)</span>
+        </button>
+        <button id="gameSelectBtn2">
+            <span id="game2Btn_en">One Hundred Rush</span>
+            <span id="game2Btn_zh" style="display:none">最快一百分</span>
+        </button>
+    </div>
+<div id="game1" class="container" style="display:none;">
+        <h1><span id="title1_en">Super Speedy Sums Splash!</span><span id="title1_zh" style="display:none">超級快速加法遊戲！</span></h1>
+        <div class="horizontal-question" aria-live="polite" id="question1">
+            <span id="num1_1"></span> + <span id="num2_1"></span> = 
+            <input type="number" id="answerInput1" min="0" max="18" autocomplete="off" />
+        </div>
+        <div id="feedback1" aria-live="polite"></div>
+        <div style="margin-top: 10px">
+            <span id="score1"><span id="scoreText1_en">Score: </span><span id="scoreText1_zh" style="display:none">得分: </span>0</span>  
+            <span style="color:red">•</span>  
+            <span id="highScore1"><span id="highScoreText1_en">High Score: </span><span id="highScoreText1_zh" style="display:none">最高分: </span>0</span>
+        </div>
+        <div id="timer1"><span id="timerText1_en">Time Left: </span><span id="timerText1_zh" style="display:none">剩餘時間：</span>60s</div>
+        <div style="margin-top: 18px">
+            <button id="pauseBtn1">⏸️ <span id="pauseBtn1_en">Pause</span><span id="pauseBtn1_zh" style="display:none">暫停</span></button>
+            <button id="mistakeBtn1"><span id="mistakeBtn1_en">❌ Mistakes</span><span id="mistakeBtn1_zh" style="display:none">❌ 錯題</span></button>
+            <button id="leaderBtn1"><span id="leaderBtn1_en">📊 Leaderboard</span><span id="leaderBtn1_zh" style="display:none">📊 排行榜</span></button>
+        </div>
+        <div id="mistakes1" style="display:none;"></div>
+        <div id="leaderboard1">
+            <h3><span id="leaderTitle1_en">🏆 Top 5 Scores</span><span id="leaderTitle1_zh" style="display:none">🏆 前 5 名得分</span></h3>
+            <ol id="leaderList1"></ol>
+            <p id="noLeaderData1" style="display:none;color:var(--blue);"><span id="noLeaderData1_en">No leaderboard data available.</span><span id="noLeaderData1_zh" style="display:none">暫無排行榜數據。</span></p>
+        </div>
+        <button id="restartBtn1"><span id="restartBtn1_en">Play Again</span><span id="restartBtn1_zh" style="display:none">再玩一次</span></button>
+        <button id="returnBtn1"><span id="returnBtn1_en">Return to Menu</span><span id="returnBtn1_zh" style="display:none">返回目錄</span></button>
+        <div id="pauseOverlay1" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10; text-align:center; color:white; font-size:2em; padding-top:20%;">
+            <span id="pausedText1_en">Paused</span><span id="pausedText1_zh" style="display:none">已暫停</span><br>
+            <button id="resumeBtn1">▶️ <span id="resumeBtn1_en">Resume</span><span id="resumeBtn1_zh" style="display:none">繼續</span></button>
+        </div>
     </div>
 
-    <div id="game3" class="container" style="display:none;">
-        <h1><span id="title3_en">Super Speedy Sums!</span><span id="title3_zh" style="display:none">最快一分鐘加法！</span></h1>
-        <div class="horizontal-question" aria-live="polite" id="question3">
-            <span id="num1_3"></span> + <span id="num2_3"></span> = 
-            <input type="number" id="answerInput3" min="0" max="9" autocomplete="off" />
+    <div id="game2" class="container" style="display:none;">
+        <h1><span id="title2_en">One Hundred Rush</span><span id="title2_zh" style="display:none">最快一百分</span></h1>
+        <div class="horizontal-question" aria-live="polite" id="question2">
+            <span id="num1_2"></span> + <span id="num2_2"></span> = 
+            <input type="number" id="answerInput2" min="0" max="18" autocomplete="off" />
         </div>
-        <div id="feedback3" aria-live="polite"></div>
+        <div id="feedback2" aria-live="polite"></div>
         <div style="margin-top: 10px">
-            <span id="score3"><span id="scoreText3_en">Score: </span><span id="scoreText3_zh" style="display:none">得分: </span>0</span>  
+            <span id="score2"><span id="scoreText2_en">Score: </span><span id="scoreText2_zh" style="display:none">得分: </span>0</span>  
             <span style="color:red">•</span>  
-            <span id="highScore3"><span id="highScoreText3_en">High Score: </span><span id="highScoreText3_zh" style="display:none">最高分: </span>0</span>
-        </div>
-        <div id="timer3"><span id="timerText3_en">Time Left: </span><span id="timerText3_zh" style="display:none">剩餘時間：</span>60s</div>
-        <div style="margin-top: 18px">
-            <button id="pauseBtn3">⏸️ <span id="pauseBtn3_en">Pause</span><span id="pauseBtn3_zh" style="display:none">暫停</span></button>
-            <button id="mistakeBtn3"><span id="mistakeBtn3_en">❌ Mistakes</span><span id="mistakeBtn3_zh" style="display:none">❌ 錯題</span></button>
-            <button id="leaderBtn3"><span id="leaderBtn3_en">📊 Leaderboard</span><span id="leaderBtn3_zh" style="display:none">📊 排行榜</span></button>
-        </div>
-        <div id="mistakes3" style="display:none;"></div>
-        <div id="leaderboard3">
-            <h3><span id="leaderTitle3_en">🏆 Top 5 Scores</span><span id="leaderTitle3_zh" style="display:none">🏆 前 5 名得分</span></h3>
-            <ol id="leaderList3"></ol>
-            <p id="noLeaderData3" style="display:none;color:var(--blue);"><span id="noLeaderData3_en">No leaderboard data available.</span><span id="noLeaderData3_zh" style="display:none">暫無排行榜數據。</span></p>
-        </div>
-        <button id="restartBtn3"><span id="restartBtn3_en">Play Again</span><span id="restartBtn3_zh" style="display:none">再玩一次</span></button>
-        <button id="returnBtn3"><span id="returnBtn3_en">Return to Menu</span><span id="returnBtn3_zh" style="display:none">返回目錄</span></button>
-        <div id="pauseOverlay3" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10; text-align:center; color:white; font-size:2em; padding-top:20%;">
-            <span id="pausedText3_en">Paused</span><span id="pausedText3_zh" style="display:none">已暫停</span><br>
-            <button id="resumeBtn3">▶️ <span id="resumeBtn3_en">Resume</span><span id="resumeBtn3_zh" style="display:none">繼續</span></button>
-        </div>
-    </div>
-<div id="game4" class="container" style="display:none;">
-        <h1><span id="title4_en">One Hundred Rush</span><span id="title4_zh" style="display:none">最快一百分</span></h1>
-        <div class="horizontal-question" aria-live="polite" id="question4">
-            <span id="num1_4"></span> + <span id="num2_4"></span> = 
-            <input type="number" id="answerInput4" min="0" max="9" autocomplete="off" />
-        </div>
-        <div id="feedback4" aria-live="polite"></div>
-        <div style="margin-top: 10px">
-            <span id="score4"><span id="scoreText4_en">Score: </span><span id="scoreText4_zh" style="display:none">得分: </span>0</span>  
-            <span style="color:red">•</span>  
-            <span id="bestTime4"><span id="bestTimeText4_en">Best Time: </span><span id="bestTimeText4_zh" style="display:none">最佳時間: </span>–</span>
+            <span id="bestTime2"><span id="bestTimeText2_en">Best Time: </span><span id="bestTimeText2_zh" style="display:none">最佳時間: </span>–</span>
         </div>
         <div style="margin: 10px auto; width: 80%; background: #ddd; border-radius: 5px;">
-            <div id="progressBar4" style="width: 0%; height: 10px; background: var(--green); border-radius: 5px;"></div>
+            <div id="progressBar2" style="width: 0%; height: 10px; background: var(--green); border-radius: 5px;"></div>
         </div>
-        <div id="timeUsed4"><span id="timeUsedText4_en">Time Used: </span><span id="timeUsedText4_zh" style="display:none">已用時間: </span>0.0 s</div>
+        <div id="timeUsed2"><span id="timeUsedText2_en">Time Used: </span><span id="timeUsedText2_zh" style="display:none">已用時間: </span>0.0 s</div>
         <div style="margin-top: 18px">
-            <button id="pauseBtn4">⏸️ <span id="pauseBtn4_en">Pause</span><span id="pauseBtn4_zh" style="display:none">暫停</span></button>
-            <button id="mistakeBtn4"><span id="mistakeBtn4_en">❌ Mistakes</span><span id="mistakeBtn4_zh" style="display:none">❌ 錯題</span></button>
-            <button id="leaderBtn4"><span id="leaderBtn4_en">📊 Leaderboard</span><span id="leaderBtn4_zh" style="display:none">📊 排行榜</span></button>
+            <button id="pauseBtn2">⏸️ <span id="pauseBtn2_en">Pause</span><span id="pauseBtn2_zh" style="display:none">暫停</span></button>
+            <button id="mistakeBtn2"><span id="mistakeBtn2_en">❌ Mistakes</span><span id="mistakeBtn2_zh" style="display:none">❌ 錯題</span></button>
+            <button id="leaderBtn2"><span id="leaderBtn2_en">📊 Leaderboard</span><span id="leaderBtn2_zh" style="display:none">📊 排行榜</span></button>
         </div>
-        <div id="mistakes4" style="display:none;"></div>
-        <div id="leaderboard4">
-            <h3><span id="leaderTitle4_en">🏆 Top 5 Fastest</span><span id="leaderTitle4_zh" style="display:none">🏆 前 5 名最快</span></h3>
-            <ol id="leaderList4"></ol>
-            <p id="noLeaderData4" style="display:none;color:var(--blue);"><span id="noLeaderData4_en">No leaderboard data available.</span><span id="noLeaderData4_zh" style="display:none">暫無排行榜數據。</span></p>
+        <div id="mistakes2" style="display:none;"></div>
+        <div id="leaderboard2">
+            <h3><span id="leaderTitle2_en">🏆 Top 5 Fastest</span><span id="leaderTitle2_zh" style="display:none">🏆 前 5 名最快</span></h3>
+            <ol id="leaderList2"></ol>
+            <p id="noLeaderData2" style="display:none;color:var(--blue);"><span id="noLeaderData2_en">No leaderboard data available.</span><span id="noLeaderData2_zh" style="display:none">暫無排行榜數據。</span></p>
         </div>
-        <button id="restartBtn4"><span id="restartBtn4_en">Play Again</span><span id="restartBtn4_zh" style="display:none">再玩一次</span></button>
-        <button id="returnBtn4"><span id="returnBtn4_en">Return to Menu</span><span id="returnBtn4_zh" style="display:none">返回目錄</span></button>
-        <div id="pauseOverlay4" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10; text-align:center; color:white; font-size:2em; padding-top:20%;">
-            <span id="pausedText4_en">Paused</span><span id="pausedText4_zh" style="display:none">已暫停</span><br>
-            <button id="resumeBtn4">▶️ <span id="resumeBtn4_en">Resume</span><span id="resumeBtn4_zh" style="display:none">繼續</span></button>
+        <button id="restartBtn2"><span id="restartBtn2_en">Play Again</span><span id="restartBtn2_zh" style="display:none">再玩一次</span></button>
+        <button id="returnBtn2"><span id="returnBtn2_en">Return to Menu</span><span id="returnBtn2_zh" style="display:none">返回目錄</span></button>
+        <div id="pauseOverlay2" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10; text-align:center; color:white; font-size:2em; padding-top:20%;">
+            <span id="pausedText2_en">Paused</span><span id="pausedText2_zh" style="display:none">已暫停</span><br>
+            <button id="resumeBtn2">▶️ <span id="resumeBtn2_en">Resume</span><span id="resumeBtn2_zh" style="display:none">繼續</span></button>
         </div>
     </div>
-
-    <script>
+<script>
         const username = (() => {
             let n = localStorage.getItem("username");
             if (!n) {
@@ -305,7 +327,7 @@
         firebase.initializeApp({
             apiKey: "AIzaSyB-qOLia1TQAeK3U_HrJZJ7M4ePlJkS2Ik",
             authDomain: "speedsums-621b2.firebaseapp.com",
-            projectId: "speedsums-621b2",
+            projectId: "speedsums ern
             storageBucket: "speedsums-621b2.appspot.com",
             messagingSenderId: "812641533469",
             appId: "1:812641533469:web:c3fe978e04f48cb3bf50f4"
@@ -336,18 +358,18 @@
         const langSelect = q("#langSelect");
         const savedLang = localStorage.getItem("lang") || "en";
         langSelect.value = savedLang;
-        
+
         function switchLang() {
             const lang = q("#langSelect").value;
             document.querySelectorAll("[id$='_en']").forEach(el => el.style.display = lang === "en" ? "inline" : "none");
             document.querySelectorAll("[id$='_zh']").forEach(el => el.style.display = lang === "zh" ? "inline" : "none");
-            updateScore3(); updateHighScore3(); updateTimer3();
-            if (q("#mistakes3").style.display === "block") showMistakes3();
-            if (q("#leaderboard3").style.display === "block") refreshLeaderboard3();
-            updateScore4(); updateTimer4();
-            bestEl4.innerHTML = `<span id="bestTimeText4_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Best Time: </span><span id="bestTimeText4_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最佳時間: </span>${bestTime4 ? bestTime4.toFixed(2) + ' s' : '–'}`;
-            if (q("#mistakes4").style.display === "block") showMistakes4();
-            if (q("#leaderboard4").style.display === "block") refreshLeaderboard4();
+            updateScore1(); updateHighScore1(); updateTimer1();
+            if (q("#mistakes1").style.display === "block") showMistakes1();
+            if (q("#leaderboard1").style.display === "block") refreshLeaderboard1();
+            updateScore2(); updateTimer2();
+            bestEl2.innerHTML = `<span id="bestTimeText2_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Best Time: </span><span id="bestTimeText2_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最佳時間: </span>${bestTime2 ? bestTime2.toFixed(2) + ' s' : '–'}`;
+            if (q("#mistakes2").style.display === "block") showMistakes2();
+            if (q("#leaderboard2").style.display === "block") refreshLeaderboard2();
             q("#soundToggle").innerHTML = lang === "en" ? 
                 `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none">音效: ${soundEnabled ? "開" : "關"}</span>` : 
                 `<span id="soundToggle_en" style="display:none">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
@@ -358,92 +380,93 @@
             switchLang();
         });
 
-        q("#gameSelectBtn3").addEventListener("click", () => {
+        q("#gameSelectBtn1").addEventListener("click", () => {
             q("#gameSelection").style.display = "none";
-            q("#game3").style.display = "block";
-            q("#game4").style.display = "none";
-            startGame3();
+            q("#game1").style.display = "block";
+            q("#game2").style.display = "none";
+            startGame1();
         });
 
-        q("#gameSelectBtn4").addEventListener("click", () => {
+        q("#gameSelectBtn2").addEventListener("click", () => {
             q("#gameSelection").style.display = "none";
-            q("#game3").style.display = "none";
-            q("#game4").style.display = "block";
-            startGame4();
+            q("#game1").style.display = "none";
+            q("#game2").style.display = "block";
+            startGame2();
         });
 
-        let score3 = 0, timeLeft3 = 60, highScore3 = parseInt(localStorage.getItem("highScore3") || 0), timer3, mistakes3 = [], num1_3, num2_3, myLastScore3 = null;
-        let isPaused3 = false;
-        const num1El3 = q("#num1_3"), num2El3 = q("#num2_3"), ansInp3 = q("#answerInput3"),
-              scoreEl3 = q("#score3"), timerEl3 = q("#timer3"), highScoreEl3 = q("#highScore3"), fbk3 = q("#feedback3"),
-              mistakesDiv3 = q("#mistakes3"), leaderDiv3 = q("#leaderboard3"), leaderList3 = q("#leaderList3"), noLeaderData3 = q("#noLeaderData3");
+        let score1 = 0, timeLeft1 = 60, highScore1 = parseInt(localStorage.getItem("highScore1") || 0), timer1, mistakes1 = [], num1_1, num2_1, myLastScore1 = null;
+        let isPaused1 = false;
+        const num1El1 = q("#num1_1"), num2El1 = q("#num2_1"), ansInp1 = q("#answerInput1"),
+              scoreEl1 = q("#score1"), timerEl1 = q("#timer1"), highScoreEl1 = q("#highScore1"), fbk1 = q("#feedback1"),
+              mistakesDiv1 = q("#mistakes1"), leaderDiv1 = q("#leaderboard1"), leaderList1 = q("#leaderList1"), noLeaderData1 = q("#noLeaderData1");
 
-        function updateScore3() {
+        function updateScore1() {
             const lang = q("#langSelect").value;
-            scoreEl3.innerHTML = `<span id="scoreText3_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Score: </span><span id="scoreText3_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">得分: </span>${score3}`;
+            scoreEl1.innerHTML = `<span id="scoreText1_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Score: </span><span id="scoreText1_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">得分: </span>${score1}`;
         }
 
-        function updateHighScore3() {
+        function updateHighScore1() {
             const lang = q("#langSelect").value;
-            highScoreEl3.innerHTML = `<span id="highScoreText3_en" style="display:${lang === 'en' ? 'inline' : 'none'}">High Score: </span><span id="highScoreText3_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最高分: </span>${highScore3}`;
+            highScoreEl1.innerHTML = `<span id="highScoreText1_en" style="display:${lang === 'en' ? 'inline' : 'none'}">High Score: </span><span id="highScoreText1_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最高分: </span>${highScore1}`;
         }
 
-        function updateTimer3() {
+        function updateTimer1() {
             const lang = q("#langSelect").value;
-            timerEl3.innerHTML = `<span id="timerText3_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Time Left: </span><span id="timerText3_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">剩餘時間：</span>${timeLeft3}s`;
+            timerEl1.innerHTML = `<span id="timerText1_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Time Left: </span><span id="timerText1_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">剩餘時間：</span>${timeLeft1}s`;
         }
 
-        function generateQuestion3() {
-            num1_3 = Math.floor(Math.random() * 9);
-            num2_3 = Math.floor(Math.random() * 9);
-            num1El3.textContent = num1_3;
-            num2El3.textContent = num2_3;
-            ansInp3.value = "";
-            ansInp3.focus();
-            fbk3.textContent = "";
+        function generateQuestion1() {
+            num1_1 = Math.floor(Math.random() * 9) + 1;
+            num2_1 = Math.floor(Math.random() * 9) + 1;
+            num1El1.textContent = num1_1;
+            num2El1.textContent = num2_1;
+            ansInp1.value = "";
+            ansInp1.focus();
+            fbk1.textContent = "";
         }
-function checkAnswer3(userAnswer) {
-            if (ansInp3.value.length < 1) return;
-            const correctAnswer = num1_3 + num2_3;
+
+        function checkAnswer1(userAnswer) {
+            if (ansInp1.value.length < 1) return;
+            const correctAnswer = num1_1 + num2_1;
             if (!isNaN(userAnswer) && userAnswer === correctAnswer) {
                 const correctEmojis = ['🐟', '✨', '🎉'];
                 const randomCorrect = correctEmojis[Math.floor(Math.random() * correctEmojis.length)];
-                fbk3.innerHTML = userAnswer + ' <span class="correct">✔' + randomCorrect + '</span>';
-                score3 += 3;
-                updateScore3();
+                fbk1.innerHTML = userAnswer + ' <span class="correct">✔' + randomCorrect + '</span>';
+                score1 += 3;
+                updateScore1();
                 playRandomCorrectSound();
             } else {
                 const wrongEmojis = ['😵', '💦'];
                 const randomWrong = wrongEmojis[Math.floor(Math.random() * wrongEmojis.length)];
-                fbk3.innerHTML = userAnswer + ' <span class="incorrect">✘' + randomWrong + '</span>';
-                mistakes3.push({
-                    question: `${num1_3} + ${num2_3}`,
+                fbk1.innerHTML = userAnswer + ' <span class="incorrect">✘' + randomWrong + '</span>';
+                mistakes1.push({
+                    question: `${num1_1} + ${num2_1}`,
                     userAnswer: userAnswer,
                     correctAnswer: correctAnswer
                 });
-                score3 = Math.max(0, score3 - 1);
-                updateScore3();
+                score1 = Math.max(0, score1 - 1);
+                updateScore1();
             }
-            setTimeout(generateQuestion3, 500);
+            setTimeout(generateQuestion1, 500);
         }
 
-        function showMistakes3() {
+        function showMistakes1() {
             const lang = q("#langSelect").value;
-            mistakesDiv3.innerHTML = `<h3><span id="mistakesTitle3_en" style="display:${lang === 'en' ? 'block' : 'none'}">❌ Mistakes</span><span id="mistakesTitle3_zh" style="display:${lang === 'zh' ? 'block' : 'none'}">❌ 錯題</span></h3>`;
-            if (mistakes3.length === 0) {
-                mistakesDiv3.innerHTML += `<p><span id="noMistakes3_en" style="display:${lang === 'en' ? 'block' : 'none'}">No mistakes! 🎉</span><span id="noMistakes3_zh" style="display:${lang === 'zh' ? 'block' : 'none'}">沒有錯誤！🎉</span></p>`;
+            mistakesDiv1.innerHTML = `<h3><span id="mistakesTitle1_en" style="display:${lang === 'en' ? 'block' : 'none'}">❌ Mistakes</span><span id="mistakesTitle1_zh" style="display:${lang === 'zh' ? 'block' : 'none'}">❌ 錯題</span></h3>`;
+            if (mistakes1.length === 0) {
+                mistakesDiv1.innerHTML += `<p><span id="noMistakes1_en" style="display:${lang === 'en' ? 'block' : 'none'}">No mistakes! 🎉</span><span id="noMistakes1_zh" style="display:${lang === 'zh' ? 'block' : 'none'}">沒有錯誤！🎉</span></p>`;
             } else {
-                mistakes3.forEach(m => {
+                mistakes1.forEach(m => {
                     const div = document.createElement('div');
                     div.innerHTML = `${m.question} = <span class="wrong">${m.userAnswer}</span>, <span class="correct">${m.correctAnswer}</span>`;
-                    mistakesDiv3.appendChild(div);
+                    mistakesDiv1.appendChild(div);
                 });
             }
-            mistakesDiv3.style.display = "block";
-            leaderDiv3.style.display = "none";
+            mistakesDiv1.style.display = "block";
+            leaderDiv1.style.display = "none";
         }
 
-        function refreshLeaderboard3() {
+        function refreshLeaderboard1() {
             db.ref("scores").orderByChild("score").limitToLast(5).once("value").then(snap => {
                 const arr = [];
                 snap.forEach(ch => {
@@ -452,7 +475,8 @@ function checkAnswer3(userAnswer) {
                         arr.push(val);
                     }
                 });
-                const virtualData3 = [
+
+                const virtualData1 = [
                     { name: "Alex", score: 60, timestamp: Date.now() - 1000 },
                     { name: "明", score: 52, timestamp: Date.now() - 2000 },
                     { name: "Kitty Chow", score: 45, timestamp: Date.now() - 3000 },
@@ -461,14 +485,15 @@ function checkAnswer3(userAnswer) {
                 ];
                 const neededEntries = 5 - arr.length;
                 if (neededEntries > 0) {
-                    arr.push(...virtualData3.slice(0, neededEntries));
+                    arr.push(...virtualData1.slice(0, neededEntries));
                 }
+
                 arr.sort((a, b) => b.score - a.score || a.timestamp - b.timestamp);
                 if (arr.length === 0) {
-                    leaderList3.innerHTML = "";
-                    noLeaderData3.style.display = "block";
+                    leaderList1.innerHTML = "";
+                    noLeaderData1.style.display = "block";
                 } else {
-                    leaderList3.innerHTML = "";
+                    leaderList1.innerHTML = "";
                     const ranks = [];
                     let currentRank = 1;
                     for (let i = 0; i < arr.length; i++) {
@@ -485,209 +510,209 @@ function checkAnswer3(userAnswer) {
                         const li = document.createElement("li");
                         const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "";
                         li.textContent = `${ranks[i]}. ${entry.name} – ${entry.score} ${medal}`;
-                        if (entry.name === username && entry.score === myLastScore3) {
+                        if (entry.name === username && entry.score === myLastScore1) {
                             li.classList.add("me");
                         }
-                        leaderList3.appendChild(li);
+                        leaderList1.appendChild(li);
                     });
-                    noLeaderData3.style.display = "none";
+                    noLeaderData1.style.display = "none";
                 }
-                leaderDiv3.style.display = "block";
+                leaderDiv1.style.display = "block";
             }).catch(error => {
                 console.error("Error fetching leaderboard:", error);
-                leaderList3.innerHTML = "";
-                noLeaderData3.style.display = "block";
+                leaderList1.innerHTML = "";
+                noLeaderData1.style.display = "block";
             });
         }
 
-        function startTimer3() {
-            timer3 = setInterval(() => {
-                if (isPaused3) return;
-                timeLeft3--;
-                updateTimer3();
-                if (timeLeft3 === 5 && soundEnabled) q("#countdownSound").play();
-                if (timeLeft3 <= 0) {
-                    clearInterval(timer3);
+        function startTimer1() {
+            timer1 = setInterval(() => {
+                if (isPaused1) return;
+                timeLeft1--;
+                updateTimer1();
+                if (timeLeft1 === 5 && soundEnabled) q("#countdownSound").play();
+                if (timeLeft1 <= 0) {
+                    clearInterval(timer1);
                     const lang = q("#langSelect").value;
-                    fbk3.textContent = lang === "en" ? "Time's up! 🕒" : "時間到！🕒";
-                    ansInp3.disabled = true;
-                    myLastScore3 = score3;
-                    db.ref("scores").push({ name: username, score: score3, timestamp: Date.now() }).then(() => {
-                        refreshLeaderboard3();
-                        if (score3 > highScore3) {
-                            highScore3 = score3;
-                            localStorage.setItem("highScore3", highScore3);
-                            updateHighScore3();
+                    fbk1.textContent = lang === "en" ? "Time's up! 🕒" : "時間到！🕒";
+                    ansInp1.disabled = true;
+                    myLastScore1 = score1;
+                    db.ref("scores").push({ name: username, score: score1, timestamp: Date.now() }).then(() => {
+                        refreshLeaderboard1();
+                        if (score1 > highScore1) {
+                            highScore1 = score1;
+                            localStorage.setItem("highScore1", highScore1);
+                            updateHighScore1();
                             if (soundEnabled) q("#cheerSound").play();
                         }
-                        q("#restartBtn3").style.display = "inline-block";
-                        q("#returnBtn3").style.display = "inline-block";
+                        q("#restartBtn1").style.display = "inline-block";
+                        q("#returnBtn1").style.display = "inline-block";
                     }).catch(error => {
                         console.error("Error saving score:", error);
-                        fbk3.textContent = lang === "en" ? "Error saving to leaderboard." : "無法保存到排行榜。";
-                        q("#restartBtn3").style.display = "inline-block";
-                        q("#returnBtn3").style.display = "inline-block";
+                        fbk1.textContent = lang === "en" ? "Error saving to leaderboard." : "無法保存到排行榜。";
+                        q("#restartBtn1").style.display = "inline-block";
+                        q("#returnBtn1").style.display = "inline-block";
                     });
                 }
             }, 1000);
         }
 
-        function startGame3() {
-            score3 = 0;
-            timeLeft3 = 60;
-            mistakes3 = [];
-            myLastScore3 = null;
-            isPaused3 = false;
-            updateScore3();
-            updateTimer3();
-            mistakesDiv3.style.display = "none";
-            leaderDiv3.style.display = "none";
-            leaderList3.innerHTML = "";
-            noLeaderData3.style.display = "none";
-            q("#restartBtn3").style.display = "none";
-            q("#returnBtn3").style.display = "none";
-            q("#pauseOverlay3").style.display = "none";
-            ansInp3.disabled = false;
-            fbk3.textContent = "";
-            generateQuestion3();
-            startTimer3();
+        function startGame1() {
+            score1 = 0;
+            timeLeft1 = 60;
+            mistakes1 = [];
+            myLastScore1 = null;
+            isPaused1 = false;
+            updateScore1();
+            updateTimer1();
+            mistakesDiv1.style.display = "none";
+            leaderDiv1.style.display = "none";
+            leaderList1.innerHTML = "";
+            noLeaderData1.style.display = "none";
+            q("#restartBtn1").style.display = "none";
+            q("#returnBtn1").style.display = "none";
+            q("#pauseOverlay1").style.display = "none";
+            ansInp1.disabled = false;
+            fbk1.textContent = "";
+            generateQuestion1();
+            startTimer1();
         }
 
-        ansInp3.addEventListener("input", e => {
+        ansInp1.addEventListener("input", e => {
             const val = parseInt(e.target.value, 10);
-            if (!isNaN(val)) checkAnswer3(val);
+            if (!isNaN(val)) checkAnswer1(val);
         });
 
-        q("#mistakeBtn3").addEventListener("click", () => {
-            if (mistakesDiv3.style.display === "block") {
-                mistakesDiv3.style.display = "none";
+        q("#mistakeBtn1").addEventListener("click", () => {
+            if (mistakesDiv1.style.display === "block") {
+                mistakesDiv1.style.display = "none";
             } else {
-                showMistakes3();
+                showMistakes1();
             }
         });
 
-        q("#leaderBtn3").addEventListener("click", () => {
-            if (leaderDiv3.style.display === "block") {
-                leaderDiv3.style.display = "none";
-                noLeaderData3.style.display = "none";
+        q("#leaderBtn1").addEventListener("click", () => {
+            if (leaderDiv1.style.display === "block") {
+                leaderDiv1.style.display = "none";
+                noLeaderData1.style.display = "none";
             } else {
-                refreshLeaderboard3();
-                mistakesDiv3.style.display = "none";
+                refreshLeaderboard1();
+                mistakesDiv1.style.display = "none";
             }
         });
 
-        q("#pauseBtn3").addEventListener("click", () => {
-            isPaused3 = true;
-            clearInterval(timer3);
-            q("#pauseOverlay3").style.display = "block";
+        q("#pauseBtn1").addEventListener("click", () => {
+            isPaused1 = true;
+            clearInterval(timer1);
+            q("#pauseOverlay1").style.display = "block";
         });
 
-        q("#resumeBtn3").addEventListener("click", () => {
-            isPaused3 = false;
-            q("#pauseOverlay3").style.display = "none";
-            startTimer3();
+        q("#resumeBtn1").addEventListener("click", () => {
+            isPaused1 = false;
+            q("#pauseOverlay1").style.display = "none";
+            startTimer1();
         });
 
-        q("#restartBtn3").addEventListener("click", startGame3);
+        q("#restartBtn1").addEventListener("click", startGame1);
 
-        q("#returnBtn3").addEventListener("click", () => {
+        q("#returnBtn1").addEventListener("click", () => {
             window.location.href = 'mathgameindex.html';
         });
 
-        const TARGET_SCORE4 = 100, CORRECT_POINTS4 = 3, WRONG_POINTS4 = -1;
-        let score4 = 0, timeUsed4 = 0, bestTime4 = parseFloat(localStorage.getItem("bestTime4")) || null, timer4, mistakes4 = [], num1_4, num2_4, myLastTime4 = null;
-        let isPaused4 = false, gameStarted4 = false;
-        const num1El4 = q("#num1_4"), num2El4 = q("#num2_4"), ansInp4 = q("#answerInput4"),
-              scoreEl4 = q("#score4"), timeEl4 = q("#timeUsed4"), bestEl4 = q("#bestTime4"), fbk4 = q("#feedback4"),
-              progressBar4 = q("#progressBar4"), mistakesDiv4 = q("#mistakes4"), leaderDiv4 = q("#leaderboard4"),
-              leaderList4 = q("#leaderList4"), noLeaderData4 = q("#noLeaderData4");
+        const TARGET_SCORE2 = 100, CORRECT_POINTS2 = 3, WRONG_POINTS2 = -1;
+        let score2 = 0, timeUsed2 = 0, bestTime2 = parseFloat(localStorage.getItem("bestTime2")) || null, timer2, mistakes2 = [], num1_2, num2_2, myLastTime2 = null;
+        let isPaused2 = false, gameStarted2 = false;
+        const num1El2 = q("#num1_2"), num2El2 = q("#num2_2"), ansInp2 = q("#answerInput2"),
+              scoreEl2 = q("#score2"), timeEl2 = q("#timeUsed2"), bestEl2 = q("#bestTime2"), fbk2 = q("#feedback2"),
+              progressBar2 = q("#progressBar2"), mistakesDiv2 = q("#mistakes2"), leaderDiv2 = q("#leaderboard2"),
+              leaderList2 = q("#leaderList2"), noLeaderData2 = q("#noLeaderData2");
 
-        function updateScore4() {
+        function updateScore2() {
             const lang = q("#langSelect").value;
-            scoreEl4.innerHTML = `<span id="scoreText4_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Score: </span><span id="scoreText4_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">得分: </span>${score4}`;
-            progressBar4.style.width = `${(score4 / TARGET_SCORE4) * 100}%`;
+            scoreEl2.innerHTML = `<span id="scoreText2_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Score: </span><span id="scoreText2_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">得分: </span>${score2}`;
+            progressBar2.style.width = `${(score2 / TARGET_SCORE2) * 100}%`;
         }
 
-        function updateTimer4() {
+        function updateTimer2() {
             const lang = q("#langSelect").value;
-            timeEl4.innerHTML = `<span id="timeUsedText4_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Time Used: </span><span id="timeUsedText4_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">已用時間: </span>${timeUsed4.toFixed(1)} s`;
+            timeEl2.innerHTML = `<span id="timeUsedText2_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Time Used: </span><span id="timeUsedText2_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">已用時間: </span>${timeUsed2.toFixed(1)} s`;
         }
 
-        function generateQuestion4() {
-            num1_4 = Math.floor(Math.random() * 9);
-            num2_4 = Math.floor(Math.random() * 9);
-            num1El4.textContent = num1_4;
-            num2El4.textContent = num2_4;
-            ansInp4.value = "";
-            ansInp4.focus();
-            fbk4.textContent = "";
+        function generateQuestion2() {
+            num1_2 = Math.floor(Math.random() * 9) + 1;
+            num2_2 = Math.floor(Math.random() * 9) + 1;
+            num1El2.textContent = num1_2;
+            num2El2.textContent = num2_2;
+            ansInp2.value = "";
+            ansInp2.focus();
+            fbk2.textContent = "";
         }
-function checkAnswer4(userAnswer) {
-            if (ansInp4.value.length < 1) return;
-            const correctAnswer = num1_4 + num2_4;
+function checkAnswer2(userAnswer) {
+            if (ansInp2.value.length < 1) return;
+            const correctAnswer = num1_2 + num2_2;
             if (!isNaN(userAnswer) && userAnswer === correctAnswer) {
                 const correctEmojis = ['🐟', '✨', '🎉'];
                 const randomCorrect = correctEmojis[Math.floor(Math.random() * correctEmojis.length)];
-                fbk4.innerHTML = userAnswer + ' <span class="correct">✔' + randomCorrect + '</span>';
-                score4 += CORRECT_POINTS4;
-                updateScore4();
+                fbk2.innerHTML = userAnswer + ' <span class="correct">✔' + randomCorrect + '</span>';
+                score2 += CORRECT_POINTS2;
+                updateScore2();
                 playRandomCorrectSound();
-                if (score4 >= TARGET_SCORE4) {
-                    clearInterval(timer4);
+                if (score2 >= TARGET_SCORE2) {
+                    clearInterval(timer2);
                     const lang = q("#langSelect").value;
-                    fbk4.textContent = lang === "en" ? "You did it! 🎉" : "你成功了！🎉";
-                    ansInp4.disabled = true;
-                    myLastTime4 = timeUsed4;
-                    db.ref("times").push({ name: username, time: timeUsed4, timestamp: Date.now() }).then(() => {
-                        refreshLeaderboard4();
-                        if (!bestTime4 || timeUsed4 < bestTime4) {
-                            bestTime4 = timeUsed4;
-                            localStorage.setItem("bestTime4", bestTime4);
-                            bestEl4.innerHTML = `<span id="bestTimeText4_en">Best Time: </span><span id="bestTimeText4_zh" style="display:none">最佳時間: </span>${bestTime4.toFixed(2)} s`;
+                    fbk2.textContent = lang === "en" ? "You did it! 🎉" : "你成功了！🎉";
+                    ansInp2.disabled = true;
+                    myLastTime2 = timeUsed2;
+                    db.ref("times").push({ name: username, time: timeUsed2, timestamp: Date.now() }).then(() => {
+                        refreshLeaderboard2();
+                        if (!bestTime2 || timeUsed2 < bestTime2) {
+                            bestTime2 = timeUsed2;
+                            localStorage.setItem("bestTime2", bestTime2);
+                            bestEl2.innerHTML = `<span id="bestTimeText2_en">Best Time: </span><span id="bestTimeText2_zh" style="display:none">最佳時間: </span>${bestTime2.toFixed(2)} s`;
                             if (soundEnabled) q("#cheerSound").play();
                         }
-                        q("#restartBtn4").style.display = "inline-block";
-                        q("#returnBtn4").style.display = "inline-block";
+                        q("#restartBtn2").style.display = "inline-block";
+                        q("#returnBtn2").style.display = "inline-block";
                     }).catch(error => {
                         console.error("Error saving time:", error);
-                        fbk4.textContent = lang === "en" ? "Error saving to leaderboard." : "無法保存到排行榜。";
-                        q("#restartBtn4").style.display = "inline-block";
-                        q("#returnBtn4").style.display = "inline-block";
+                        fbk2.textContent = lang === "en" ? "Error saving to leaderboard." : "無法保存到排行榜。";
+                        q("#restartBtn2").style.display = "inline-block";
+                        q("#returnBtn2").style.display = "inline-block";
                     });
                     return;
                 }
             } else {
                 const wrongEmojis = ['😵', '💦'];
                 const randomWrong = wrongEmojis[Math.floor(Math.random() * wrongEmojis.length)];
-                fbk4.innerHTML = userAnswer + ' <span class="incorrect">✘' + randomWrong + '</span>';
-                mistakes4.push({
-                    question: `${num1_4} + ${num2_4}`,
+                fbk2.innerHTML = userAnswer + ' <span class="incorrect">✘' + randomWrong + '</span>';
+                mistakes2.push({
+                    question: `${num1_2} + ${num2_2}`,
                     userAnswer: userAnswer,
                     correctAnswer: correctAnswer
                 });
-                score4 = Math.max(0, score4 + WRONG_POINTS4);
-                updateScore4();
+                score2 = Math.max(0, score2 + WRONG_POINTS2);
+                updateScore2();
             }
-            setTimeout(generateQuestion4, 500);
+            setTimeout(generateQuestion2, 500);
         }
 
-        function showMistakes4() {
+        function showMistakes2() {
             const lang = q("#langSelect").value;
-            mistakesDiv4.innerHTML = `<h3><span id="mistakesTitle4_en" style="display:${lang === 'en' ? 'block' : 'none'}">❌ Mistakes</span><span id="mistakesTitle4_zh" style="display:${lang === 'zh' ? 'block' : 'none'}">❌ 錯題</span></h3>`;
-            if (mistakes4.length === 0) {
-                mistakesDiv4.innerHTML += `<p><span id="noMistakes4_en" style="display:${lang === 'en' ? 'block' : 'none'}">No mistakes! 🎉</span><span id="noMistakes4_zh" style="display:${lang === 'zh' ? 'block' : 'none'}">沒有錯誤！🎉</span></p>`;
+            mistakesDiv2.innerHTML = `<h3><span id="mistakesTitle2_en" style="display:${lang === 'en' ? 'block' : 'none'}">❌ Mistakes</span><span id="mistakesTitle2_zh" style="display:${lang === 'zh' ? 'block' : 'none'}">❌ 錯題</span></h3>`;
+            if (mistakes2.length === 0) {
+                mistakesDiv2.innerHTML += `<p><span id="noMistakes2_en" style="display:${lang === 'en' ? 'block' : 'none'}">No mistakes! 🎉</span><span id="noMistakes2_zh" style="display:${lang === 'zh' ? 'block' : 'none'}">沒有錯誤！🎉</span></p>`;
             } else {
-                mistakes4.forEach(m => {
+                mistakes2.forEach(m => {
                     const div = document.createElement('div');
                     div.innerHTML = `${m.question} = <span class="wrong">${m.userAnswer}</span>, <span class="correct">${m.correctAnswer}</span>`;
-                    mistakesDiv4.appendChild(div);
+                    mistakesDiv2.appendChild(div);
                 });
             }
-            mistakesDiv4.style.display = "block";
-            leaderDiv4.style.display = "none";
+            mistakesDiv2.style.display = "block";
+            leaderDiv2.style.display = "none";
         }
 
-        function refreshLeaderboard4() {
+        function refreshLeaderboard2() {
             db.ref("times").orderByChild("time").limitToFirst(5).once("value").then(snap => {
                 const arr = [];
                 snap.forEach(ch => {
@@ -696,7 +721,8 @@ function checkAnswer4(userAnswer) {
                         arr.push(val);
                     }
                 });
-                const virtualData4 = [
+
+                const virtualData2 = [
                     { name: "Alex", time: 85.2, timestamp: Date.now() - 1000 },
                     { name: "明", time: 98.1, timestamp: Date.now() - 2000 },
                     { name: "Kitty Chow", time: 115.7, timestamp: Date.now() - 3000 },
@@ -705,14 +731,15 @@ function checkAnswer4(userAnswer) {
                 ];
                 const neededEntries = 5 - arr.length;
                 if (neededEntries > 0) {
-                    arr.push(...virtualData4.slice(0, neededEntries));
+                    arr.push(...virtualData2.slice(0, neededEntries));
                 }
+
                 arr.sort((a, b) => a.time - b.time || a.timestamp - b.timestamp);
                 if (arr.length === 0) {
-                    leaderList4.innerHTML = "";
-                    noLeaderData4.style.display = "block";
+                    leaderList2.innerHTML = "";
+                    noLeaderData2.style.display = "block";
                 } else {
-                    leaderList4.innerHTML = "";
+                    leaderList2.innerHTML = "";
                     const ranks = [];
                     let currentRank = 1;
                     for (let i = 0; i < arr.length; i++) {
@@ -729,91 +756,103 @@ function checkAnswer4(userAnswer) {
                         const li = document.createElement("li");
                         const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "";
                         li.textContent = `${ranks[i]}. ${entry.name} – ${entry.time.toFixed(1)}s ${medal}`;
-                        if (entry.name === username && entry.time === myLastTime4) {
+                        if (entry.name === username && entry.time === myLastTime2) {
                             li.classList.add("me");
                         }
-                        leaderList4.appendChild(li);
+                        leaderList2.appendChild(li);
                     });
-                    noLeaderData4.style.display = "none";
+                    noLeaderData2.style.display = "none";
                 }
-                leaderDiv4.style.display = "block";
+                leaderDiv2.style.display = "block";
             }).catch(error => {
                 console.error("Error fetching leaderboard:", error);
-                leaderList4.innerHTML = "";
-                noLeaderData4.style.display = "block";
+                leaderList2.innerHTML = "";
+                noLeaderData2.style.display = "block";
             });
         }
 
-        function startTimer4() {
-            timer4 = setInterval(() => {
-                if (isPaused4) return;
-                timeUsed4 += 0.1;
-                updateTimer4();
+        function startTimer2() {
+            timer2 = setInterval(() => {
+                if (isPaused2) return;
+                timeUsed2 += 0.1;
+                updateTimer2();
             }, 100);
         }
 
-        function startGame4() {
-            score4 = 0;
-            timeUsed4 = 0;
-            mistakes4 = [];
-            myLastTime4 = null;
-            isPaused4 = false;
-            gameStarted4 = true;
-            updateScore4();
-            updateTimer4();
-            mistakesDiv4.style.display = "none";
-            leaderDiv4.style.display = "none";
-            leaderList4.innerHTML = "";
-            noLeaderData4.style.display = "none";
-            q("#restartBtn4").style.display = "none";
-            q("#returnBtn4").style.display = "none";
-            q("#pauseOverlay4").style.display = "none";
-            ansInp4.disabled = false;
-            fbk4.textContent = "";
-            generateQuestion4();
-            startTimer4();
+        function startGame2() {
+            score2 = 0;
+            timeUsed2 = 0;
+            mistakes2 = [];
+            myLastTime2 = null;
+            isPaused2 = false;
+            gameStarted2 = true;
+            updateScore2();
+            updateTimer2();
+            mistakesDiv2.style.display = "none";
+            leaderDiv2.style.display = "none";
+            leaderList2.innerHTML = "";
+            noLeaderData2.style.display = "none";
+            q("#restartBtn2").style.display = "none";
+            q("#returnBtn2").style.display = "none";
+            q("#pauseOverlay2").style.display = "none";
+            ansInp2.disabled = false;
+            fbk2.textContent = "";
+            generateQuestion2();
+            startTimer2();
         }
 
-        ansInp4.addEventListener("input", e => {
+        ansInp2.addEventListener("input", e => {
             const val = parseInt(e.target.value, 10);
-            if (!isNaN(val)) checkAnswer4(val);
+            if (!isNaN(val)) checkAnswer2(val);
         });
 
-        q("#mistakeBtn4").addEventListener("click", () => {
-            if (mistakesDiv4.style.display === "block") {
-                mistakesDiv4.style.display = "none";
+        q("#mistakeBtn2").addEventListener("click", () => {
+            if (mistakesDiv2.style.display === "block") {
+                mistakesDiv2.style.display = "none";
             } else {
-                showMistakes4();
+                showMistakes2();
             }
         });
 
-        q("#leaderBtn4").addEventListener("click", () => {
-            if (leaderDiv4.style.display === "block") {
-                leaderDiv4.style.display = "none";
-                noLeaderData4.style.display = "none";
+        q("#leaderBtn2").addEventListener("click", () => {
+            if (leaderDiv2.style.display === "block") {
+                leaderDiv2.style.display = "none";
+                noLeaderData2.style.display = "none";
             } else {
-                refreshLeaderboard4();
-                mistakesDiv4.style.display = "none";
+                refreshLeaderboard2();
+                mistakesDiv2.style.display = "none";
             }
         });
 
-        q("#pauseBtn4").addEventListener("click", () => {
-            isPaused4 = true;
-            clearInterval(timer4);
-            q("#pauseOverlay4").style.display = "block";
+        q("#pauseBtn2").addEventListener("click", () => {
+            isPaused2 = true;
+            clearInterval(timer2);
+            q("#pauseOverlay2").style.display = "block";
         });
 
-        q("#resumeBtn4").addEventListener("click", () => {
-            isPaused4 = false;
-            q("#pauseOverlay4").style.display = "none";
-            startTimer4();
+        q("#resumeBtn2").addEventListener("click", () => {
+            isPaused2 = false;
+            q("#pauseOverlay2").style.display = "none";
+            startTimer2();
         });
 
-        q("#restartBtn4").addEventListener("click", startGame4);
+        q("#restartBtn2").addEventListener("click", startGame2);
 
-        q("#returnBtn4").addEventListener("click", () => {
+        q("#returnBtn2").addEventListener("click", () => {
             window.location.href = 'mathgameindex.html';
         });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const gameMode = urlParams.get('game');
+        if (gameMode === '1') {
+            q("#gameSelection").style.display = "none";
+            q("#game1").style.display = "block";
+            startGame1();
+        } else if (gameMode === '2') {
+            q("#gameSelection").style.display = "none";
+            q("#game2").style.display = "block";
+            startGame2();
+        }
 
         switchLang();
     </script>

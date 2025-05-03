@@ -71,38 +71,24 @@
         }
         .vertical-question {
             color: var(--blue);
-            line-height: 1.4em;
-            text-align: center;
-            min-width: 220px;
+            font-size: 2.4em;
+            margin-bottom: 10px;
         }
         .vertical-math {
-            display: inline-block;
-            text-align: left;
-            font-size: 2.4em;
-            line-height: 1.4em;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
         }
-        .vertical-math > div,
-        .vertical-math > input {
-            display: block;
-            width: 4em;
-            text-align: right;
-            font-family: monospace;
-            padding-right: 0.2em;
-            box-sizing: border-box;
+        .vertical-math div {
+            margin: 5px 0;
         }
-        .vertical-math > div[style*="border-top"] {
-            height: 3px;
-            margin-top: 4px;
-            margin-bottom: 4px;
-            border-top: 3px solid var(--blue);
-            padding-right: 0;
-        }
-        input[type="number"] {
-            padding: 8px 12px;
-            border: 2px solid var(--green);
-            border-radius: 8px;
-            width: 100%;
+        .vertical-math input[type="number"] {
+            width: 80px;
             font-size: 1em;
+            padding: 5px;
+            border: 2px solid var(--green);
+            border-radius: 5px;
+            text-align: right;
         }
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
@@ -170,6 +156,12 @@
             padding: 5px 10px;
             font-size: 1em;
         }
+        select {
+            padding: 5px;
+            font-size: 1em;
+            border-radius: 5px;
+            margin: 5px;
+        }
         #mistakes3, #mistakes4 {
             text-align: left;
             margin-top: 25px;
@@ -200,13 +192,16 @@
             background-color: #ffe4e1;
             border-radius: 4px;
         }
+        #game4 div:nth-child(4) {
+            white-space: nowrap;
+        }
         @media (max-width: 600px) {
-            .vertical-math {
+            .vertical-question {
                 font-size: 1.8em;
             }
-            input[type="number"] {
+            .vertical-math input[type="number"] {
                 font-size: 0.8em;
-                width: 100px;
+                width: 60px;
             }
             h1 {
                 font-size: 1.6rem;
@@ -234,32 +229,40 @@
 <body>
     <div style="text-align: right; margin-bottom: 10px">
         🔊 <button id="soundToggle"><span id="soundToggle_en">Sound: On</span><span id="soundToggle_zh" style="display:none">音效: 開</span></button>
+        <select id="langSelect">
+            <option value="en">English</option>
+            <option value="zh">中文</option>
+        </select>
     </div>
 
     <div id="gameSelection" class="container">
-        <h1><span id="selectTitle_en">Chan Sir's Two Digits Vertical Math Game<img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="Chan Sir" style="vertical-align: middle; margin-left: 5px;" /></span><span id="selectTitle_zh" style="display:none">陳sir2位數直式數學遊戲<img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="陳sir" style="vertical-align: middle; margin-left: 5px;" /></span></h1>
+        <h1>
+            <span id="selectTitle_en">Chan Sir's Two Digits Vertical Math Game</span>
+            <span id="selectTitle_zh" style="display:none">陳sir2位數直式數學遊戲</span>
+            <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="Chan Sir" style="vertical-align: middle; margin-left: 5px;" />
+        </h1>
         <div class="category-title">
-            <span id="category2_en">Two Digits Addition (Vertical)</span>
-            <span id="category2_zh" style="display:none">2位數相加 (直式)</span>
+            <span id="category2_en">Two Digits Addition - Vertical</span>
+            <span id="category2_zh" style="display:none">2位數相加 - 直式</span>
         </div>
-        <button id="gameSelectBtn3"><span id="game3Btn_en">Super Speedy Sums Splash (1 min)</span><span id="game3Btn_zh" style="display:none">超級快速加法遊戲 (1 分鐘)</span></button>
-        <button id="gameSelectBtn4"><span id="game4Btn_en">One Hundred Rush</span><span id="game4Btn_zh" style="display:none">最快一百分</span></button>
+        <button id="gameSelectBtn3">
+            <span id="game3Btn_en">Super Speedy Sums Splash (1 min)</span>
+            <span id="game3Btn_zh" style="display:none">超級快速加法遊戲 (1 分鐘)</span>
+        </button>
+        <button id="gameSelectBtn4">
+            <span id="game4Btn_en">One Hundred Rush</span>
+            <span id="game4Btn_zh" style="display:none">最快一百分</span>
+        </button>
     </div>
-
-    <div id="game3" class="container" style="display:none;">
+<div id="game3" class="container" style="display:none;">
         <h1><span id="title3_en">Super Speedy Sums Splash!</span><span id="title3_zh" style="display:none">超級快速加法遊戲！</span></h1>
         <div class="vertical-question" aria-live="polite" id="question3">
-            <div class="vertical-math">
-                <div id="num1_3"></div>
-                <div id="num2_3"></div>
-                <div style="border-top: 3px solid var(--blue);"></div>
-                <input type="number" id="answerInput3" min="0" max="99" autocomplete="off" />
-            </div>
+            <span id="num1_3"></span><br>+ <span id="num2_3"></span><br>= <input type="number" id="answerInput3" min="0" max="99" autocomplete="off" />
         </div>
         <div id="feedback3" aria-live="polite"></div>
         <div style="margin-top: 10px">
-            <span id="score3"><span id="scoreText3_en">Score: </span><span id="scoreText3_zh" style="display:none">得分: </span>0</span>  
-            <span style="color:red">•</span>  
+            <span id="score3"><span id="scoreText3_en">Score: </span><span id="scoreText3_zh" style="display:none">得分: </span>0</span> &nbsp;
+            <span style="color:red">•</span> &nbsp;
             <span id="highScore3"><span id="highScoreText3_en">High Score: </span><span id="highScoreText3_zh" style="display:none">最高分: </span>0</span>
         </div>
         <div id="timer3"><span id="timerText3_en">Time Left: </span><span id="timerText3_zh" style="display:none">剩餘時間：</span>60s</div>
@@ -281,20 +284,16 @@
             <button id="resumeBtn3">▶️ <span id="resumeBtn3_en">Resume</span><span id="resumeBtn3_zh" style="display:none">繼續</span></button>
         </div>
     </div>
-<div id="game4" class="container" style="display:none;">
+
+    <div id="game4" class="container" style="display:none;">
         <h1><span id="title4_en">One Hundred Rush</span><span id="title4_zh" style="display:none">最快一百分</span></h1>
         <div class="vertical-question" aria-live="polite" id="question4">
-            <div class="vertical-math">
-                <div id="num1_4"></div>
-                <div id="num2_4"></div>
-                <div style="border-top: 3px solid var(--blue);"></div>
-                <input type="number" id="answerInput4" min="0" max="99" autocomplete="off" />
-            </div>
+            <span id="num1_4"></span><br>+ <span id="num2_4"></span><br>= <input type="number" id="answerInput4" min="0" max="99" autocomplete="off" />
         </div>
         <div id="feedback4" aria-live="polite"></div>
         <div style="margin-top: 10px">
-            <span id="score4"><span id="scoreText4_en">Score: </span><span id="scoreText4_zh" style="display:none">得分: </span>0</span>  
-            <span style="color:red">•</span>  
+            <span id="score4"><span id="scoreText4_en">Score: </span><span id="scoreText4_zh" style="display:none">得分: </span>0</span> &nbsp;
+            <span style="color:red">•</span> &nbsp;
             <span id="bestTime4"><span id="bestTimeText4_en">Best Time: </span><span id="bestTimeText4_zh" style="display:none">最佳時間: </span>–</span>
         </div>
         <div style="margin: 10px auto; width: 80%; background: #ddd; border-radius: 5px;">
@@ -319,120 +318,6 @@
             <button id="resumeBtn4">▶️ <span id="resumeBtn4_en">Resume</span><span id="resumeBtn4_zh" style="display:none">繼續</span></button>
         </div>
     </div>
-
-    <script>
-        const username = (() => {
-            let n = localStorage.getItem("username");
-            if (!n) {
-                const lang = document.querySelector("#langSelect").value;
-                n = prompt(lang === "en" ? "Your name?" : "請輸入你的名字：") || "Anonymous";
-                localStorage.setItem("username", n);
-            }
-            return n;
-        })();
-
-        firebase.initializeApp({
-            apiKey: "AIzaSyB-qOLia1TQAeK3U_HrJZJ7M4ePlJkS2Ik",
-            authDomain: "speedsums-621b2.firebaseapp.com",
-            projectId: "speedsums-621b2",
-            storageBucket: "speedsums-621b2.appspot.com",
-            messagingSenderId: "812641533469",
-            appId: "1:812641533469:web:c3fe978e04f48cb3bf50f4"
-        });
-        const db = firebase.database();
-
-        const q = s => document.querySelector(s);
-
-        let soundEnabled = true;
-        q("#soundToggle").addEventListener("click", () => {
-            soundEnabled = !soundEnabled;
-            const lang = q("#langSelect").value;
-            q("#soundToggle").innerHTML = lang === "en" ? 
-                `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none">音效: ${soundEnabled ? "開" : "關"}</span>` : 
-                `<span id="soundToggle_en" style="display:none">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
-        });
-
-        function playRandomCorrectSound() {
-            if (!soundEnabled) return;
-            const correctSounds = [
-                q("#okaySound"), q("#welldoneSound"), q("#correctSound"), q("#greatSound"),
-                q("#c1Sound"), q("#c2Sound"), q("#c3Sound"), q("#c4Sound"), q("#c5Sound"), q("#c6Sound")
-            ];
-            const randomSound = correctSounds[Math.floor(Math.random() * correctSounds.length)];
-            randomSound.play();
-        }
-
-        const langSelect = q("#langSelect");
-        const savedLang = localStorage.getItem("lang") || "en";
-        langSelect.value = savedLang;
-        
-        function switchLang() {
-            const lang = q("#langSelect").value;
-            document.querySelectorAll("[id$='_en']").forEach(el => el.style.display = lang === "en" ? "inline" : "none");
-            document.querySelectorAll("[id$='_zh']").forEach(el => el.style.display = lang === "zh" ? "inline" : "none");
-            updateScore3(); updateHighScore3(); updateTimer3();
-            if (q("#mistakes3").style.display === "block") showMistakes3();
-            if (q("#leaderboard3").style.display === "block") refreshLeaderboard3();
-            updateScore4(); updateTimer4();
-            bestEl4.innerHTML = `<span id="bestTimeText4_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Best Time: </span><span id="bestTimeText4_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最佳時間: </span>${bestTime4 ? bestTime4.toFixed(2) + ' s' : '–'}`;
-            if (q("#mistakes4").style.display === "block") showMistakes4();
-            if (q("#leaderboard4").style.display === "block") refreshLeaderboard4();
-            q("#soundToggle").innerHTML = lang === "en" ? 
-                `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none">音效: ${soundEnabled ? "開" : "關"}</span>` : 
-                `<span id="soundToggle_en" style="display:none">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
-        }
-
-        langSelect.addEventListener("change", () => {
-            localStorage.setItem("lang", langSelect.value);
-            switchLang();
-        });
-
-        q("#gameSelectBtn3").addEventListener("click", () => {
-            q("#gameSelection").style.display = "none";
-            q("#game3").style.display = "block";
-            q("#game4").style.display = "none";
-            startGame3();
-        });
-
-        q("#gameSelectBtn4").addEventListener("click", () => {
-            q("#gameSelection").style.display = "none";
-            q("#game3").style.display = "none";
-            q("#game4").style.display = "block";
-            startGame4();
-        });
-
-        let score3 = 0, timeLeft3 = 60, highScore3 = parseInt(localStorage.getItem("highScore3") || 0), timer3, mistakes3 = [], num1_3, num2_3, myLastScore3 = null;
-        let isPaused3 = false;
-        const num1El3 = q("#num1_3"), num2El3 = q("#num2_3"), ansInp3 = q("#answerInput3"),
-              scoreEl3 = q("#score3"), timerEl3 = q("#timer3"), highScoreEl3 = q("#highScore3"), fbk3 = q("#feedback3"),
-              mistakesDiv3 = q("#mistakes3"), leaderDiv3 = q("#leaderboard3"), leaderList3 = q("#leaderList3"), noLeaderData3 = q("#noLeaderData3");
-
-        function updateScore3() {
-            const lang = q("#langSelect").value;
-            scoreEl3.innerHTML = `<span id="scoreText3_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Score: </span><span id="scoreText3_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">得分: </span>${score3}`;
-        }
-
-        function updateHighScore3() {
-            const lang = q("#langSelect").value;
-            highScoreEl3.innerHTML = `<span id="highScoreText3_en" style="display:${lang === 'en' ? 'inline' : 'none'}">High Score: </span><span id="highScoreText3_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最高分: </span>${highScore3}`;
-        }
-
-        function updateTimer3() {
-            const lang = q("#langSelect").value;
-            timerEl3.innerHTML = `<span id="timerText3_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Time Left: </span><span id="timerText3_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">剩餘時間：</span>${timeLeft3}s`;
-        }
-
-        function generateQuestion3() {
-            do {
-                num1_3 = Math.floor(Math.random() * 90) + 10;
-                num2_3 = Math.floor(Math.random() * 90) + 10;
-            } while (num1_3 + num2_3 > 99);
-            num1El3.textContent = num1_3;
-            num2El3.textContent = num2_3;
-            ansInp3.value = "";
-            ansInp3.focus();
-            fbk3.textContent = "";
-        }
 function checkAnswer3(userAnswer) {
             if (ansInp3.value.length < 2) return;
             const correctAnswer = num1_3 + num2_3;
@@ -851,6 +736,18 @@ function checkAnswer4(userAnswer) {
         q("#returnBtn4").addEventListener("click", () => {
             window.location.href = 'mathgameindex.html';
         });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const gameMode = urlParams.get('game');
+        if (gameMode === '3') {
+            q("#gameSelection").style.display = "none";
+            q("#game3").style.display = "block";
+            startGame3();
+        } else if (gameMode === '4') {
+            q("#gameSelection").style.display = "none";
+            q("#game4").style.display = "block";
+            startGame4();
+        }
 
         switchLang();
     </script>
