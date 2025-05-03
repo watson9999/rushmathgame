@@ -1,13 +1,21 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>陳sir數學遊戲中心</title>
+    <title>Chan Sir's Math Games Menu</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="#4682b4" />
     <link rel="manifest" href="manifest.json" />
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("service-worker.js")
+                    .catch(console.error);
+            });
+        }
+    </script>
 
     <style>
         :root {
@@ -15,7 +23,6 @@
             --green: #32cd32;
             --red: #ff4500;
             --orange: #ff9a00;
-            --purple: #8a2be2;
         }
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -27,6 +34,7 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
+            line-height: 1.6; /* Improve readability */
         }
         .container {
             background: #fff;
@@ -36,93 +44,243 @@
             max-width: 600px;
             text-align: center;
             position: relative;
+            width: 100%; /* Make container responsive */
+            box-sizing: border-box; /* Include padding in width */
         }
         h1 {
             color: #ff6347;
-            margin: 0 0 10px; /* Adjusted margin */
-            font-size: 2.2rem; /* Adjusted font size */
+            margin: 0 0 15px;
+            font-size: 2.2rem; /* Adjusted size for menu */
         }
-         h1 img {
-             vertical-align: middle;
-             margin-left: 8px;
-             height: 40px; /* Ensure image size is appropriate */
+         h2 {
+             color: var(--blue);
+             margin: 20px 0 10px;
+             font-size: 1.5rem;
+             border-bottom: 2px solid #eee;
+             padding-bottom: 5px;
          }
-        .game-category {
-            background-color: var(--purple); /* New color for categories */
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 20px; /* Space above category */
-            margin-bottom: 10px; /* Space below category */
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-        .game-button {
-            display: block; /* Make buttons take full width */
+        button {
             cursor: pointer;
             border: none;
-            border-radius: 8px; /* Slightly larger border radius */
-            padding: 12px 20px; /* Adjusted padding */
-            font-size: 1.3em; /* Adjusted font size */
-            margin: 10px auto; /* Center buttons and add vertical space */
-            width: 90%; /* Make buttons wide */
-            max-width: 400px; /* Max width for larger screens */
-            background: var(--orange); /* Button color */
+            border-radius: 8px; /* Slightly larger border-radius */
+            padding: 15px 25px; /* Increased padding */
+            font-size: 1.3em; /* Slightly larger font size */
+            margin: 10px 0; /* Increased margin */
+            background: var(--green); /* Default button color */
             color: white;
-            text-decoration: none; /* Remove underline from link */
-            text-align: center;
-            transition: background-color 0.3s ease; /* Smooth transition */
+            width: 100%; /* Full width buttons */
+            box-sizing: border-box; /* Include padding in width */
+            transition: background-color 0.3s ease; /* Smooth hover effect */
         }
-        .game-button:hover {
-            background-color: #ff7f50; /* Darker orange on hover */
+        button:hover {
+            background-color: #28a745; /* Darker green on hover */
         }
-        .game-button:active {
-             background-color: #e65a33; /* Even darker when clicked */
+        button:active {
+            background-color: #218838; /* Even darker on click */
         }
 
+        /* Specific button styles (optional, to differentiate) */
+        .button-single-digit {
+             background-color: var(--orange);
+        }
+         .button-single-digit:hover {
+             background-color: #cc7a00;
+         }
+         .button-two-digits-h {
+             background-color: var(--blue);
+         }
+          .button-two-digits-h:hover {
+              background-color: #356b9a;
+          }
+          .button-two-digits-v {
+              background-color: #ff69b4; /* Pink color */
+          }
+           .button-two-digits-v:hover {
+               background-color: #e6509e;
+           }
+
+
+        #soundToggle {
+            background: #87ceeb;
+            padding: 5px 10px;
+            font-size: 1em;
+            width: auto; /* Override full width */
+            margin: 0 5px; /* Adjust margin */
+            vertical-align: middle;
+        }
+         #soundToggle:hover {
+             background-color: #6ac5e8;
+         }
+         #langSelect {
+             font-size: 1em;
+             padding: 5px;
+             vertical-align: middle;
+         }
+         .settings {
+             text-align: right;
+             margin-bottom: 20px;
+         }
+
+
         @media (max-width: 600px) {
-            h1 {
-                font-size: 1.8rem;
-            }
-            h1 img {
-                 height: 30px;
-            }
             .container {
                 padding: 20px 15px;
             }
-             .game-category {
-                 font-size: 1.3em;
-             }
-            .game-button {
-                font-size: 1.1em;
-                padding: 10px 15px;
-                width: 100%;
+            h1 {
+                font-size: 1.8rem;
             }
+             h2 {
+                 font-size: 1.3rem;
+             }
+            button {
+                padding: 12px 20px;
+                font-size: 1.1em;
+                margin: 8px 0;
+            }
+             .settings {
+                 text-align: center;
+             }
+             #soundToggle, #langSelect {
+                  margin: 5px;
+             }
         }
     </style>
 </head>
 <body>
+    <div class="settings">
+        🔊 <button id="soundToggle"><span id="soundToggle_en">Sound: On</span><span id="soundToggle_zh" style="display:none;">音效: 開</span></button> &nbsp;
+        🌐 <span id="langLabel_en">Language:</span><span id="langLabel_zh" style="display:none;">語言:</span>
+        <select id="langSelect" aria-label="Select language">
+            <option value="en">English</option>
+            <option value="zh">繁體中文</option>
+        </select>
+    </div>
 
     <div class="container">
         <h1>
-            陳sir數學遊戲中心
-            <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="陳sir" />
+            <span id="mainTitle_en">Chan Sir's Math Games</span>
+            <span id="mainTitle_zh" style="display:none;">陳sir數學遊戲</span>
+             <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="Chan Sir" style="vertical-align: middle; margin-left: 5px;" />
         </h1>
-        <p>請選擇你想玩的遊戲：</p>
 
-        <div class="game-category">個位數加法</div>
-        <a href="singledigit.html#mode=1min" class="game-button">超級快速加法遊戲 (1 分鐘)</a>
-        <a href="singledigit.html#mode=100pts" class="game-button">最快一百分 (到 100 分)</a>
+        <h2><span id="category1Title_en">Single Digit Addition</span><span id="category1Title_zh" style="display:none;">個位數加法</span></h2>
+        <button class="button-single-digit" onclick="window.location.href='singledigit.html#mode=1min'">
+            <span id="game1Btn_en">Super Speedy Sums Splash (1 min)</span>
+            <span id="game1Btn_zh" style="display:none;">超級快速加法遊戲 (1 分鐘)</span>
+        </button>
+        <button class="button-single-digit" onclick="window.location.href='singledigit.html#mode=100pts'">
+            <span id="game2Btn_en">One Hundred Rush (to 100 points)</span>
+            <span id="game2Btn_zh" style="display:none;">最快一百分 (到 100 分)</span>
+        </button>
 
-        <div class="game-category">兩位數加法 (橫式)</div>
-        <a href="2digits_h.html#mode=1min" class="game-button">超級快速加法遊戲 (1 分鐘)</a>
-        <a href="2digits_h.html#mode=100pts" class="game-button">最快一百分 (到 100 分)</a>
+        <h2><span id="category2Title_en">2-Digit Horizontal Addition</span><span id="category2Title_zh" style="display:none;">兩位數橫式加法</span></h2>
+        <button class="button-two-digits-h" onclick="window.location.href='2digits_h.html#mode=1min'">
+             <span id="game3Btn_en">Super Speedy Sums Splash (1 min)</span>
+             <span id="game3Btn_zh" style="display:none;">超級快速加法遊戲 (1 分鐘)</span>
+        </button>
+        <button class="button-two-digits-h" onclick="window.location.href='2digits_h.html#mode=100pts'">
+             <span id="game4Btn_en">One Hundred Rush (to 100 points)</span>
+             <span id="game4Btn_zh" style="display:none;">最快一百分 (到 100 分)</span>
+        </button>
 
-        <div class="game-category">兩位數加法 (直式)</div>
-        <a href="2digits_v.html#mode=1min" class="game-button">超級快速加法遊戲 (1 分鐘)</a>
-        <a href="2digits_v.html#mode=100pts" class="game-button">最快一百分 (到 100 分)</a>
+        <h2><span id="category3Title_en">2-Digit Vertical Addition</span><span id="category3Title_zh" style="display:none;">兩位數豎式加法</span></h2>
+        <button class="button-two-digits-v" onclick="window.location.href='2digits_v.html#mode=1min'">
+             <span id="game5Btn_en">Super Speedy Sums Splash (1 min)</span>
+             <span id="game5Btn_zh" style="display:none;">超級快速加法遊戲 (1 分鐘)</span>
+        </button>
+        <button class="button-two-digits-v" onclick="window.location.href='2digits_v.html#mode=100pts'">
+             <span id="game6Btn_en">One Hundred Rush (to 100 points)</span>
+             <span id="game6Btn_zh" style="display:none;">最快一百分 (到 100 分)</span>
+        </button>
 
     </div>
 
+    <script>
+        // Language Switching for Index Page
+        const langSelect = document.querySelector("#langSelect");
+        const savedLang = localStorage.getItem("lang") || "en";
+
+        // Set initial language
+        if (langSelect) {
+            langSelect.value = savedLang;
+            switchLang(); // Apply initial language
+        }
+
+        // Add event listener for language change
+        if (langSelect) {
+            langSelect.addEventListener("change", () => {
+                localStorage.setItem("lang", langSelect.value);
+                switchLang();
+            });
+        }
+
+        function switchLang() {
+            const lang = langSelect ? langSelect.value : savedLang;
+            document.querySelectorAll("[id$='_en']").forEach(el => {
+                 if (el.parentElement.id === 'soundToggle' && el.id === 'soundToggle_en') {
+                     // Special handling for sound toggle to keep 'Sound: On/Off' logic
+                     el.style.display = lang === "en" ? "inline" : "none";
+                 } else {
+                    el.style.display = lang === "en" ? "inline" : "none";
+                 }
+            });
+            document.querySelectorAll("[id$='_zh']").forEach(el => {
+                 if (el.parentElement.id === 'soundToggle' && el.id === 'soundToggle_zh') {
+                     // Special handling for sound toggle
+                     el.style.display = lang === "zh" ? "inline" : "none";
+                 } else {
+                    el.style.display = lang === "zh" ? "inline" : "none";
+                 }
+            });
+
+             // Update sound toggle text based on language and state
+            const soundToggleBtn = document.querySelector("#soundToggle");
+            if (soundToggleBtn) {
+                 // Need to check soundEnabled state from localStorage or default
+                 const soundEnabled = localStorage.getItem("soundEnabled") !== "false"; // Default to true
+                 const currentLang = langSelect ? langSelect.value : savedLang;
+
+                 if (currentLang === "en") {
+                      soundToggleBtn.innerHTML = `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none;">音效: ${soundEnabled ? "開" : "關"}</span>`;
+                 } else {
+                       soundToggleBtn.innerHTML = `<span id="soundToggle_en" style="display:none;">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
+                 }
+            }
+        }
+
+        // Sound Toggle Logic for Index Page (saves state to localStorage)
+        const soundToggleBtn = document.querySelector("#soundToggle");
+        // Read initial sound state from localStorage
+        let soundEnabled = localStorage.getItem("soundEnabled") !== "false"; // Default to true if not in storage
+
+        if (soundToggleBtn) {
+             // Initial text update based on state and language
+             const currentLang = langSelect ? langSelect.value : savedLang;
+             soundToggleBtn.innerHTML = currentLang === "en" ?
+                 `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none;">音效: ${soundEnabled ? "開" : "關"}</span>` :
+                 `<span id="soundToggle_en" style="display:none;">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
+
+
+             soundToggleBtn.addEventListener("click", () => {
+                 soundEnabled = !soundEnabled;
+                 localStorage.setItem("soundEnabled", soundEnabled); // Save state
+                 const currentLang = langSelect ? langSelect.value : savedLang;
+
+                 soundToggleBtn.innerHTML = currentLang === "en" ?
+                     `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none;">音效: ${soundEnabled ? "開" : "關"}</span>` :
+                     `<span id="soundToggle_en" style="display:none;">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
+
+                 // Note: Actual sound playback is handled in the game files based on this localStorage value
+             });
+        }
+
+
+         // Ensure initial language is applied after DOM is fully loaded
+         document.addEventListener('DOMContentLoaded', () => {
+              switchLang();
+         });
+
+
+    </script>
 </body>
 </html>

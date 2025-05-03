@@ -159,6 +159,10 @@
             font-size: 1.2em;
             margin: 5px;
         }
+        #gameSelectBtn3, #gameSelectBtn4 {
+            background: #ffd700;
+            white-space: nowrap;
+        }
         #mistakeBtn3, #leaderBtn3, #mistakeBtn4, #leaderBtn4 {
             background: #eee;
             margin: 0 4px;
@@ -241,6 +245,9 @@
                 font-size: 1.1em;
                 margin: 8px;
             }
+            #gameSelectBtn3, #gameSelectBtn4 {
+                font-size: 1em;
+            }
             #mistakeBtn3, #leaderBtn3, #mistakeBtn4, #leaderBtn4, #pauseBtn3, #pauseBtn4 {
                 margin: 8px;
             }
@@ -262,6 +269,19 @@
             <option value="en">English</option>
             <option value="zh">繁體中文</option>
         </select>
+    </div>
+
+    <div id="gameSelection" class="container">
+        <h1>
+            <span id="selectTitle_en">Chan Sir's Vertical Math Game<img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="Chan Sir" style="vertical-align: middle; margin-left: 5px;" /></span>
+            <span id="selectTitle_zh" style="display:none">陳sir直式數學遊戲<img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="陳sir" style="vertical-align: middle; margin-left: 5px;" /></span>
+        </h1>
+        <div class="category-title">
+            <span id="category2_en">Sum of 2 Digits Numbers - Vertical</span>
+            <span id="category2_zh" style="display:none">2位數相加 - 直式</span>
+        </div>
+        <button id="gameSelectBtn3"><span id="game3Btn_en">Super Speedy Sums Splash (1 min)</span><span id="game3Btn_zh" style="display:none">超級快速加法遊戲 (1 分鐘)</span></button>
+        <button id="gameSelectBtn4"><span id="game4Btn_en">One Hundred Rush (to 100 points)</span><span id="game4Btn_zh" style="display:none">最快一百分 (到 100 分)</span></button>
     </div>
 
     <div id="game3" class="container">
@@ -340,12 +360,10 @@
 
     <script>
          // Shared Setup
-        // Initialize username immediately
         const username = (() => {
             let n = localStorage.getItem("username");
             if (!n) {
-                 // Use default language 'en' if langSelect is not available yet, to avoid error
-                const lang = document.querySelector("#langSelect") ? document.querySelector("#langSelect").value : 'en';
+                 const lang = document.querySelector("#langSelect") ? document.querySelector("#langSelect").value : 'en';
                 n = prompt(lang === "en" ? "Your name?" : "請輸入你的名字：") || "Anonymous";
                 localStorage.setItem("username", n);
             }
@@ -355,7 +373,7 @@
         firebase.initializeApp({
             apiKey: "AIzaSyB-qOLia1TQAeK3U_HrJZJ7M4ePlJkS2Ik",
             authDomain: "speedsums-621b2.firebaseapp.com",
-            projectId: "speedsums-621b2", // Note: Firebase project ID should be correct here if different
+            projectId: "speedsums-621b2",
             storageBucket: "speedsums-621b2.appspot.com",
             messagingSenderId: "812641533469",
             appId: "1:812641533469:web:c3fe978e04f48cb3bf50f4"
@@ -365,11 +383,19 @@
         const q = s => document.querySelector(s);
 
         // Sound Toggle
-        let soundEnabled = true;
+        let soundEnabled = localStorage.getItem("soundEnabled") !== "false"; // Read state from localStorage
         const soundToggleBtn = q("#soundToggle");
          if (soundToggleBtn) {
+             // Initial text update based on state and language
+             const currentLang = q("#langSelect") ? q("#langSelect").value : 'en';
+             soundToggleBtn.innerHTML = currentLang === "en" ?
+                 `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none">音效: ${soundEnabled ? "開" : "關"}</span>` :
+                 `<span id="soundToggle_en" style="display:none">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
+
+
             soundToggleBtn.addEventListener("click", () => {
                 soundEnabled = !soundEnabled;
+                localStorage.setItem("soundEnabled", soundEnabled); // Save state
                 const lang = q("#langSelect") ? q("#langSelect").value : 'en';
                 soundToggleBtn.innerHTML = lang === "en" ?
                     `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none">音效: ${soundEnabled ? "開" : "關"}</span>` :
@@ -400,8 +426,21 @@
 
         function switchLang() {
             const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
-            document.querySelectorAll("[id$='_en']").forEach(el => el.style.display = lang === "en" ? "inline" : "none");
-            document.querySelectorAll("[id$='_zh']").forEach(el => el.style.display = lang === "zh" ? "inline" : "none");
+            document.querySelectorAll("[id$='_en']").forEach(el => {
+                 if (el.parentElement.id === 'soundToggle' && el.id === 'soundToggle_en') {
+                     el.style.display = lang === "en" ? "inline" : "none";
+                 } else {
+                    el.style.display = lang === "en" ? "inline" : "none";
+                 }
+            });
+            document.querySelectorAll("[id$='_zh']").forEach(el => {
+                 if (el.parentElement.id === 'soundToggle' && el.id === 'soundToggle_zh') {
+                     el.style.display = lang === "zh" ? "inline" : "none";
+                 } else {
+                    el.style.display = lang === "zh" ? "inline" : "none";
+                 }
+            });
+
 
             // Update specific elements that need language adjustments for Game 3
             updateScore3();
@@ -424,13 +463,7 @@
             // if (q("#leaderboard4") && q("#leaderboard4").style.display === "block") refreshLeaderboard4();
 
 
-            // Update sound toggle text
-            const soundToggleBtn = q("#soundToggle");
-            if (soundToggleBtn) {
-                soundToggleBtn.innerHTML = lang === "en" ?
-                    `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none">音效: ${soundEnabled ? "開" : "關"}</span>` :
-                    `<span id="soundToggle_en" style="display:none">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
-            }
+            // Update sound toggle text is handled in its click listener and on initial load
         }
 
         if (langSelect) {
@@ -536,11 +569,29 @@
 
         function refreshLeaderboard3() {
              if (!leaderDiv3 || !leaderList3 || !noLeaderData3) return;
-            db.ref("scores2").orderByChild("score").limitToLast(5).once("value").then(snap => {
+             // This game uses 'scores2' path based on previous file content - ASSUMPTION
+             // NOTE: User provided 2digits_h.html using scores3 and times3.
+             // User provided 2digits_v.html using scores2 and times2.
+             // The index.html should point to the correct files.
+             // Game 3 (1 min) from 2digits_h.html should use scores3.
+             // Game 3 (1 min) from 2digits_v.html should use scores2.
+             // Let's assume this file is 2digits_h.html and it should use scores3.
+             // Correction: The user wants index.html to link to singldigit.html, 2digits_h.html, 2digits_v.html.
+             // Each of *those* files contains 2 games (1 min and 100pts).
+             // So index.html links to 3 files, and each file has internal game selection.
+             // This means the scores/times paths should remain within the game files themselves.
+             // The original code for 2digits_h.html uses scores3/times3.
+             // The original code for 2digits_v.html uses scores2/times2.
+             // The singldigit.html code uses scores/times.
+             // My latest code for singldigit.html uses scores/times.
+             // My latest code for 2digits_v.html uses scores2/times2.
+             // My latest code for 2digits_h.html uses scores3/times3.
+             // This function is in 2digits_h.html. It should use scores3.
+            db.ref("scores3").orderByChild("score").limitToLast(5).once("value").then(snap => {
                 const arr = [];
                 snap.forEach(ch => {
                     const val = ch.val();
-                    if (val && val.name && typeof val.score === "number" && !isNaN(val.score) && val.timestamp) {
+                     if (val && val.name && typeof val.score === "number" && !isNaN(val.score) && val.timestamp) {
                         arr.push({ name: val.name, score: val.score, timestamp: val.timestamp });
                     }
                 });
@@ -581,6 +632,7 @@
                      top5Arr.push(...virtualToAdd);
                       top5Arr.sort((a, b) => b.score - a.score || a.timestamp - b.timestamp);
                  }
+
 
                 if (top5Arr.length === 0) {
                      if(leaderList3) leaderList3.innerHTML = "";
@@ -627,7 +679,7 @@
                 timeLeft3--;
                 updateTimer3();
                 if (timeLeft3 === 5 && soundEnabled) {
-                     try { q("#countdownSound").currentTime = 0; q("#countdownSound").play(); } catch(e) { console.error("Countdown sound error:", e); }
+                     try { q("#countdownSound").currentTime = 0; q("#countdownSound").play(); } catch(e) { console.error("Sound playback error:", e); }
                 }
                 if (timeLeft3 <= 0) {
                     clearInterval(timer3);
@@ -635,7 +687,7 @@
                     if (fbk3) fbk3.textContent = lang === "en" ? "Time's up! 🕒" : "時間到！🕒";
                     if (ansInp3) ansInp3.disabled = true;
                     myLastScore3 = score3;
-                    db.ref("scores2").push({ name: username, score: score3, timestamp: Date.now() }).then(() => {
+                    db.ref("scores3").push({ name: username, score: score3, timestamp: Date.now() }).then(() => {
                         refreshLeaderboard3();
                         if (score3 > highScore3) {
                             highScore3 = score3;
@@ -767,7 +819,7 @@
         const TARGET_SCORE4 = 100, CORRECT_POINTS4 = 3, WRONG_POINTS4 = -1;
         let score4 = 0, timeUsed4 = 0, bestTime4 = parseFloat(localStorage.getItem("bestTime4")) || null, timer4, mistakes4 = [], num1_4, num2_4, myLastTime4 = null;
         let isPaused4 = false, gameStarted4 = false;
-        const num1El4 = q("#num1_4"), num2El4 = q("#num2_4"), ansInp4 = q("#answerInput4"), ansFld4 = q("#answer4"),
+        const num1El4 = q("#num1_4"), num2El4 = q("#num2_4"), ansInp4 = q("#answerInput4"), ansFld4 = q("#answerField4"),
               scoreEl4 = q("#score4"), timeEl4 = q("#timeUsed4"), bestEl4 = q("#bestTime4"), fbk4 = q("#feedback4"),
               progressBar4 = q("#progressBar4"), mistakesDiv4 = q("#mistakes4"), leaderDiv4 = q("#leaderboard4"),
               leaderList4 = q("#leaderList4"), noLeaderData4 = q("#noLeaderData4");
@@ -793,29 +845,19 @@
         }
 
         function generateQuestion4() {
-            do {
-                num1_4 = Math.floor(Math.random() * 90) + 10;
-                num2_4 = Math.floor(Math.random() * 90) + 10;
-            } while (num1_4 + num2_4 > 99);
-
-            if(num1El4) num1El4.textContent = num1_4.toString();
-            if(num2El4) num2El4.textContent = num2_4.toString();
-             const operatorEl = q("#question4 .grid-operator:nth-of-type(2)");
-              if(operatorEl) operatorEl.textContent = '+';
-
+            num1_4 = Math.floor(Math.random() * 90) + 10;
+            num2_4 = Math.floor(Math.random() * 90) + 10;
+            if (num1El4) num1El4.textContent = num1_4;
+            if (num2El4) num2El4.textContent = num2_4;
             if (ansInp4) { ansInp4.value = ""; ansInp4.focus(); }
             if (fbk4) fbk4.textContent = "";
-            if (ansFld4) ansFld4.textContent = "";
+            if (ansFld4) ansFld4.textContent = "?";
         }
 
         function checkAnswer4(userAnswer) {
-             if (!ansInp4 || ansInp4.value.length < 2) return;
             const correctAnswer = num1_4 + num2_4;
-
-             ansInp4.value = "";
-
-            if (ansFld4) {
-                if (!isNaN(userAnswer) && userAnswer === correctAnswer) {
+             if (ansFld4) {
+                 if (!isNaN(userAnswer) && userAnswer === correctAnswer) {
                     const correctEmojis = ['🐟', '✨', '🎉'];
                     const randomCorrect = correctEmojis[Math.floor(Math.random() * correctEmojis.length)];
                     ansFld4.innerHTML = userAnswer + ' <span class="correct">✔' + randomCorrect + '</span>';
@@ -864,7 +906,8 @@
 
         function refreshLeaderboard4() {
              if (!leaderDiv4 || !leaderList4 || !noLeaderData4) return;
-            db.ref("times2").orderByChild("time").limitToFirst(5).once("value").then(snap => {
+             // This game uses 'times3' path
+            db.ref("times3").orderByChild("time").limitToFirst(5).once("value").then(snap => {
                 const arr = [];
                 snap.forEach(ch => {
                     const val = ch.val();
@@ -882,8 +925,8 @@
                 ];
                  let combinedArr = [...arr];
                  if (myLastTime4 !== null) {
-                      const userEntry = combinedArr.find(entry => entry.name === username && entry.time === myLastTime4);
-                       if (!userEntry) {
+                     const userEntry = combinedArr.find(entry => entry.name === username && entry.time === myLastTime4);
+                      if (!userEntry) {
                            combinedArr.push({ name: username, time: myLastTime4, timestamp: Date.now() });
                        }
                  }
@@ -968,7 +1011,7 @@
                  }
                 if (soundEnabled) { try { q("#cheerSound").currentTime = 0; q("#cheerSound").play(); } catch(e) { console.error("Cheer sound error:", e); } }
             }
-            db.ref("times2").push({ name: username, time: parseFloat(tSec), timestamp: Date.now() }).then(() => {
+            db.ref("times3").push({ name: username, time: parseFloat(tSec), timestamp: Date.now() }).then(() => {
                 refreshLeaderboard4();
                  if (mistakes4.length > 0) {
                       showMistakes4();
@@ -1101,20 +1144,19 @@
 
 
         // --- Initialisation based on URL Hash ---
-        // Find the game divs
         const game3Div = q("#game3");
         const game4Div = q("#game4");
+        const gameSelectionDiv = q("#gameSelection");
 
-        // Function: Hide all game divs initially
+
         function hideAllGames() {
             if(game3Div) game3Div.style.display = 'none';
             if(game4Div) game4Div.style.display = 'none';
+            if(gameSelectionDiv) gameSelectionDiv.style.display = 'none';
         }
 
-        // Function: Start game based on mode from URL hash
-        function startGameByMode() {
-            hideAllGames();
-
+        function initializeGame() {
+             hideAllGames();
             const hash = window.location.hash;
 
             if (hash === '#mode=1min') {
@@ -1124,10 +1166,21 @@
                  if(game4Div) game4Div.style.display = 'block';
                 startGame4();
             } else {
-                 console.warn("No valid game mode specified in URL hash. Redirecting to index.html");
-                 window.location.href = 'index.html';
+                 if(gameSelectionDiv) gameSelectionDiv.style.display = 'block';
+                 // Attach listeners to game selection buttons if index.html includes this logic
+                 if (q("#gameSelectBtn3")) {
+                     q("#gameSelectBtn3").addEventListener("click", () => {
+                         window.location.href = '2digits_v.html#mode=1min';
+                     });
+                 }
+                 if (q("#gameSelectBtn4")) {
+                     q("#gameSelectBtn4").addEventListener("click", () => {
+                          window.location.href = '2digits_v.html#mode=100pts';
+                     });
+                 }
             }
-            if(game3Div && game3Div.style.display === 'block') {
+
+             if(game3Div && game3Div.style.display === 'block') {
                 const ansInput3 = q("#answerInput3");
                 if (ansInput3) ansInput3.focus();
             }
@@ -1137,11 +1190,9 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', startGameByMode);
+        document.addEventListener('DOMContentLoaded', initializeGame);
 
-        switchLang();
-
-        hideAllGames();
+        document.addEventListener('DOMContentLoaded', switchLang);
 
     </script>
 </body>

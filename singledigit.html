@@ -112,6 +112,10 @@
             font-size: 1.2em;
             margin: 5px;
         }
+        #gameSelectBtn1, #gameSelectBtn2 {
+            background: #ffd700;
+            white-space: nowrap;
+        }
         #mistakeBtn1, #leaderBtn1, #mistakeBtn2, #leaderBtn2 {
             background: #eee;
             margin: 0 4px;
@@ -194,16 +198,15 @@
                 font-size: 1.1em;
                 margin: 8px;
             }
+            #gameSelectBtn1, #gameSelectBtn2 {
+                font-size: 1em;
+            }
             #mistakeBtn1, #leaderBtn1, #mistakeBtn2, #leaderBtn2, #pauseBtn1, #pauseBtn2 {
                 margin: 8px;
             }
             #score2, #bestTime2 {
                 font-size: 1.2em;
             }
-        }
-        /* Initially hide game divs until mode is selected by JS */
-        #game1, #game2 {
-             display: none;
         }
     </style>
 </head>
@@ -217,7 +220,17 @@
         </select>
     </div>
 
-    <div id="game1" class="container">
+    <div id="gameSelection" class="container">
+        <h1>
+            <span id="selectTitle_en">Chan Sir's Math Game<img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="Chan Sir" style="vertical-align: middle; margin-left: 5px;" /></span>
+            <span id="selectTitle_zh" style="display:none;">陳sir數學遊戲<img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" height="40px" alt="陳sir" style="vertical-align: middle; margin-left: 5px;" /></span>
+        </h1>
+        <p><span id="selectSubtitle_en">Choose a game to play!</span><span id="selectSubtitle_zh" style="display:none;">選擇一個遊戲開始玩吧！</span></p>
+        <button id="gameSelectBtn1"><span id="game1Btn_en">Super Speedy Sums Splash (1 min)</span><span id="game1Btn_zh" style="display:none;">超級快速加法遊戲 (1 分鐘)</span></button>
+        <button id="gameSelectBtn2"><span id="game2Btn_en">One Hundred Rush (to 100 points)</span><span id="game2Btn_zh" style="display:none;">最快一百分 (到 100 分)</span></button>
+    </div>
+
+    <div id="game1" class="container" style="display:none;">
         <h1><span id="title1_en">Super Speedy Sums Splash!</span><span id="title1_zh" style="display:none;">超級快速加法遊戲！</span></h1>
         <p><span id="helpText1_en">What is the unit digit of the result?</span><span id="helpText1_zh" style="display:none;">請找出答案的個位數字是多少？</span></p>
         <div class="question" aria-live="polite">
@@ -249,7 +262,7 @@
         </div>
     </div>
 
-    <div id="game2" class="container">
+    <div id="game2" class="container" style="display:none;">
         <h1><span id="title2_en">One Hundred Rush</span><span id="title2_zh" style="display:none;">最快一百分</span></h1>
         <p><span id="subtitle2_en">Answer until you hit <strong>100 points</strong>. How fast can you get there?</span><span id="subtitle2_zh" style="display:none;">持續答題直到達到 <strong>100 分</strong>。你能多快完成？</span></p>
         <div class="question" aria-live="polite">
@@ -285,19 +298,16 @@
     </div>
 
     <script>
-         // Shared Setup
-        // Initialize username immediately
+        // Shared Setup
         const username = (() => {
             let n = localStorage.getItem("username");
             if (!n) {
-                // Use default language 'en' if langSelect is not available yet, to avoid error
-                const lang = document.querySelector("#langSelect") ? document.querySelector("#langSelect").value : 'en';
+                const lang = document.querySelector("#langSelect").value;
                 n = prompt(lang === "en" ? "Your name?" : "請輸入你的名字：") || "Anonymous";
                 localStorage.setItem("username", n);
             }
             return n;
         })();
-
 
         firebase.initializeApp({
             apiKey: "AIzaSyB-qOLia1TQAeK3U_HrJZJ7M4ePlJkS2Ik",
@@ -313,17 +323,13 @@
 
         // Sound Toggle
         let soundEnabled = true;
-        const soundToggleBtn = q("#soundToggle");
-        if (soundToggleBtn) {
-            soundToggleBtn.addEventListener("click", () => {
-                soundEnabled = !soundEnabled;
-                const lang = q("#langSelect") ? q("#langSelect").value : 'en';
-                soundToggleBtn.innerHTML = lang === "en" ?
-                    `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none;">音效: ${soundEnabled ? "開" : "關"}</span>` :
-                    `<span id="soundToggle_en" style="display:none;">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
-            });
-        }
-
+        q("#soundToggle").addEventListener("click", () => {
+            soundEnabled = !soundEnabled;
+            const lang = q("#langSelect").value;
+            q("#soundToggle").innerHTML = lang === "en" ?
+                `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none;">音效: ${soundEnabled ? "開" : "關"}</span>` :
+                `<span id="soundToggle_en" style="display:none;">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
+        });
 
         function playRandomCorrectSound() {
             if (!soundEnabled) return;
@@ -340,62 +346,52 @@
                 q("#c6Sound")
             ];
             const randomSound = correctSounds[Math.floor(Math.random() * correctSounds.length)];
-             if (randomSound) {
-                 try { randomSound.currentTime = 0; randomSound.play(); } catch(e) { console.error("Sound playback error:", e); }
-             }
+            randomSound.play();
         }
 
         // Language Persistence
         const langSelect = q("#langSelect");
         const savedLang = localStorage.getItem("lang") || "en";
-        if (langSelect) {
-             langSelect.value = savedLang;
-        }
-
+        langSelect.value = savedLang;
 
         function switchLang() {
-            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
+            const lang = q("#langSelect").value;
             document.querySelectorAll("[id$='_en']").forEach(el => el.style.display = lang === "en" ? "inline" : "none");
             document.querySelectorAll("[id$='_zh']").forEach(el => el.style.display = lang === "zh" ? "inline" : "none");
-
-            // Update specific elements that need language adjustments for Game 1
             updateScore1();
             updateHighScore1();
             updateTimer1();
-            if (q("#mistakes1") && q("#mistakes1").style.display === "block") showMistakes1();
-            // No leaderboard refresh here, only on game end or button click
-            // if (q("#leaderboard1") && q("#leaderboard1").style.display === "block") refreshLeaderboard1();
-
-
-            // Update specific elements that need language adjustments for Game 2
+            if (q("#mistakes1").style.display === "block") showMistakes1();
+            if (q("#leaderboard1").style.display === "block") refreshLeaderboard1();
             updateScore2();
-            updateTimer2(); // Update time used display format
-            const bestEl2 = q("#bestTime2");
-             if(bestEl2) {
-                 bestEl2.innerHTML = `<span id="bestTimeText2_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Best Time: </span><span id="bestTimeText2_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最佳時間: </span>${bestTime2 ? bestTime2.toFixed(1) + ' s' : '–'}`;
-            }
-
-            if (q("#mistakes2") && q("#mistakes2").style.display === "block") showMistakes2();
-            // No leaderboard refresh here, only on game end or button click
-            // if (q("#leaderboard2") && q("#leaderboard2").style.display === "block") refreshLeaderboard2();
-
-            // Update sound toggle text
-            const soundToggleBtn = q("#soundToggle");
-            if (soundToggleBtn) {
-                soundToggleBtn.innerHTML = lang === "en" ?
-                    `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none;">音效: ${soundEnabled ? "開" : "關"}</span>` :
-                    `<span id="soundToggle_en" style="display:none;">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
-            }
+            updateTimer2();
+            bestEl2.innerHTML = `<span id="bestTimeText2_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Best Time: </span><span id="bestTimeText2_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最佳時間: </span>${bestTime2 ? bestTime2 + ' s' : '–'}`;
+            if (q("#mistakes2").style.display === "block") showMistakes2();
+            if (q("#leaderboard2").style.display === "block") refreshLeaderboard2();
+            q("#soundToggle").innerHTML = lang === "en" ?
+                `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none;">音效: ${soundEnabled ? "開" : "關"}</span>` :
+                `<span id="soundToggle_en" style="display:none;">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
         }
 
-        if (langSelect) {
-             langSelect.addEventListener("change", () => {
-                 localStorage.setItem("lang", langSelect.value);
-                 switchLang();
-             });
-        }
+        langSelect.addEventListener("change", () => {
+            localStorage.setItem("lang", langSelect.value);
+            switchLang();
+        });
 
-        // --- Game 1 Variables and Functions ---
+        q("#gameSelectBtn1").addEventListener("click", () => {
+            q("#gameSelection").style.display = "none";
+            q("#game1").style.display = "block";
+            q("#game2").style.display = "none";
+            startGame1();
+        });
+
+        q("#gameSelectBtn2").addEventListener("click", () => {
+            q("#gameSelection").style.display = "none";
+            q("#game1").style.display = "none";
+            q("#game2").style.display = "block";
+            startGame2();
+        });
+
         let score1 = 0, timeLeft1 = 60, highScore1 = parseInt(localStorage.getItem("highScore1") || 0), timer1, mistakes1 = [], num1_1, num2_1, myLastScore1 = null;
         let isPaused1 = false;
         const num1El1 = q("#num1_1"), num2El1 = q("#num2_1"), ansInp1 = q("#answerInput1"), ansFld1 = q("#answerField1"),
@@ -403,65 +399,57 @@
               mistakesDiv1 = q("#mistakes1"), leaderDiv1 = q("#leaderboard1"), leaderList1 = q("#leaderList1"), noLeaderData1 = q("#noLeaderData1");
 
         function updateScore1() {
-            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
-            if (scoreEl1) {
-                 scoreEl1.innerHTML = `<span id="scoreText1_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Score: </span><span id="scoreText1_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">得分: </span>${score1}`;
-            }
+            const lang = q("#langSelect").value;
+            scoreEl1.innerHTML = `<span id="scoreText1_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Score: </span><span id="scoreText1_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">得分: </span>${score1}`;
         }
 
         function updateHighScore1() {
-            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
-            if (highScoreEl1) {
-                 highScoreEl1.innerHTML = `<span id="highScoreText1_en" style="display:${lang === 'en' ? 'inline' : 'none'}">High Score: </span><span id="highScoreText1_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最高分: </span>${highScore1}`;
-            }
+            const lang = q("#langSelect").value;
+            highScoreEl1.innerHTML = `<span id="highScoreText1_en" style="display:${lang === 'en' ? 'inline' : 'none'}">High Score: </span><span id="highScoreText1_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最高分: </span>${highScore1}`;
         }
 
         function updateTimer1() {
-            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
-            if (timerEl1) {
-                 timerEl1.innerHTML = `<span id="timerText1_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Time Left: </span><span id="timerText1_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">剩餘時間：</span>${timeLeft1}s`;
-            }
+            const lang = q("#langSelect").value;
+            timerEl1.innerHTML = `<span id="timerText1_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Time Left: </span><span id="timerText1_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">剩餘時間：</span>${timeLeft1}s`;
         }
 
         function generateQuestion1() {
             num1_1 = Math.floor(Math.random() * 9) + 1;
             num2_1 = Math.floor(Math.random() * 9) + 1;
-            if (num1El1) num1El1.textContent = num1_1;
-            if (num2El1) num2El1.textContent = num2_1;
-            if (ansInp1) { ansInp1.value = ""; ansInp1.focus(); }
-            if (fbk1) fbk1.textContent = "";
-            if (ansFld1) ansFld1.textContent = "?";
+            num1El1.textContent = num1_1;
+            num2El1.textContent = num2_1;
+            ansInp1.value = "";
+            ansInp1.focus();
+            fbk1.textContent = "";
+            ansFld1.textContent = "?";
         }
 
         function checkAnswer1(userAnswer) {
             const correctAnswer = (num1_1 + num2_1) % 10;
-            if (ansFld1) {
-                if (!isNaN(userAnswer) && userAnswer === correctAnswer) {
-                    const correctEmojis = ['🐟', '✨', '🎉'];
-                    const randomCorrect = correctEmojis[Math.floor(Math.random() * correctEmojis.length)];
-                    ansFld1.innerHTML = userAnswer + ' <span class="correct">✔' + randomCorrect + '</span>';
-                    score1 += 2;
-                    updateScore1();
-                    playRandomCorrectSound();
-                } else {
-                    const wrongEmojis = ['😵', '💦'];
-                    const randomWrong = wrongEmojis[Math.floor(Math.random() * wrongEmojis.length)];
-                    ansFld1.innerHTML = userAnswer + ' <span class="incorrect">✘' + randomWrong + '</span>';
-                    mistakes1.push({
-                        question: `${num1_1} + ${num2_1}`,
-                        userAnswer: userAnswer,
-                        correctAnswer: correctAnswer
-                    });
-                    score1 = Math.max(0, score1 - 1);
-                    updateScore1();
-                }
+            if (!isNaN(userAnswer) && userAnswer === correctAnswer) {
+                const correctEmojis = ['🐟', '✨', '🎉'];
+                const randomCorrect = correctEmojis[Math.floor(Math.random() * correctEmojis.length)];
+                ansFld1.innerHTML = userAnswer + ' <span class="correct">✔' + randomCorrect + '</span>';
+                score1 += 2;
+                updateScore1();
+                playRandomCorrectSound();
+            } else {
+                const wrongEmojis = ['😵', '💦'];
+                const randomWrong = wrongEmojis[Math.floor(Math.random() * wrongEmojis.length)];
+                ansFld1.innerHTML = userAnswer + ' <span class="incorrect">✘' + randomWrong + '</span>';
+                mistakes1.push({
+                    question: `${num1_1} + ${num2_1}`,
+                    userAnswer: userAnswer,
+                    correctAnswer: correctAnswer
+                });
+                score1 = Math.max(0, score1 - 1);
+                updateScore1();
             }
             setTimeout(generateQuestion1, 500);
         }
 
         function showMistakes1() {
-            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
-            if (!mistakesDiv1 || !leaderDiv1) return;
+            const lang = q("#langSelect").value;
             mistakesDiv1.innerHTML = `<h3><span id="mistakesTitle1_en" style="display:${lang === 'en' ? 'block' : 'none'}">❌ Mistakes</span><span id="mistakesTitle1_zh" style="display:${lang === 'zh' ? 'block' : 'none'}">❌ 錯題</span></h3>`;
             if (mistakes1.length === 0) {
                 mistakesDiv1.innerHTML += `<p><span id="noMistakes1_en" style="display:${lang === 'en' ? 'block' : 'none'}">No mistakes! 🎉</span><span id="noMistakes1_zh" style="display:${lang === 'zh' ? 'block' : 'none'}">沒有錯誤！🎉</span></p>`;
@@ -477,108 +465,76 @@
         }
 
         function refreshLeaderboard1() {
-             if (!leaderDiv1 || !leaderList1 || !noLeaderData1) return;
             db.ref("scores").orderByChild("score").limitToLast(5).once("value").then(snap => {
                 const arr = [];
                 snap.forEach(ch => {
                     const val = ch.val();
                     if (val && val.name && typeof val.score === "number" && !isNaN(val.score) && val.timestamp) {
-                         arr.push({ name: val.name, score: val.score, timestamp: val.timestamp });
+                        arr.push(val);
                     }
                 });
 
-                 const virtualData1 = [
+                // Add virtual data if less than 5 entries
+                const virtualData1 = [
                     { name: "Alex", score: 60, timestamp: Date.now() - 1000 },
                     { name: "明", score: 52, timestamp: Date.now() - 2000 },
                     { name: "Kitty Chow", score: 45, timestamp: Date.now() - 3000 },
                     { name: "Tommy Lee", score: 38, timestamp: Date.now() - 4000 },
                     { name: "呀寶", score: 30, timestamp: Date.now() - 5000 }
                 ];
+                const neededEntries = 5 - arr.length;
+                if (neededEntries > 0) {
+                    arr.push(...virtualData1.slice(0, neededEntries));
+                }
 
-                 let combinedArr = [...arr];
-                 if (myLastScore1 !== null) {
-                     const userEntry = combinedArr.find(entry => entry.name === username && entry.score === myLastScore1);
-                     if (!userEntry) {
-                         combinedArr.push({ name: username, score: myLastScore1, timestamp: Date.now() });
-                     }
-                 }
-
-                 combinedArr.sort((a, b) => b.score - a.score || a.timestamp - b.timestamp);
-
-                 const top5Map = new Map();
-                 for(const entry of combinedArr) {
-                      const key = `${entry.name}-${entry.score}`;
-                      if (!top5Map.has(key)) {
-                           top5Map.set(key, entry);
-                      }
-                      if (top5Map.size >= 5) break;
-                 }
-                 const top5Arr = Array.from(top5Map.values());
-
-
-                 const currentTopCount = top5Arr.length;
-                 if (currentTopCount < 5) {
-                     const virtualToAdd = virtualData1.filter(vEntry =>
-                         !top5Arr.some(rEntry => rEntry.name === vEntry.name && rEntry.score === vEntry.score)
-                     ).slice(0, 5 - currentTopCount);
-                     top5Arr.push(...virtualToAdd);
-                      top5Arr.sort((a, b) => b.score - a.score || a.timestamp - b.timestamp);
-                 }
-
-
-                if (top5Arr.length === 0) {
-                     if(leaderList1) leaderList1.innerHTML = "";
-                     if(noLeaderData1) noLeaderData1.style.display = "block";
+                arr.sort((a, b) => b.score - a.score || a.timestamp - b.timestamp);
+                if (arr.length === 0) {
+                    leaderList1.innerHTML = "";
+                    noLeaderData1.style.display = "block";
                 } else {
-                     if(leaderList1) leaderList1.innerHTML = "";
+                    leaderList1.innerHTML = "";
                     const ranks = [];
                     let currentRank = 1;
-                    for (let i = 0; i < top5Arr.length; i++) {
+                    for (let i = 0; i < arr.length; i++) {
                         if (i === 0) {
                             ranks[i] = currentRank;
-                        } else if (top5Arr[i].score === top5Arr[i - 1].score) {
+                        } else if (arr[i].score === arr[i - 1].score) {
                             ranks[i] = ranks[i - 1];
                         } else {
                             ranks[i] = i + 1;
                             currentRank = i + 1;
                         }
                     }
-                    top5Arr.slice(0, 5).forEach((entry, i) => {
-                         if(leaderList1) {
-                            const li = document.createElement("li");
-                            const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "";
-                            li.textContent = `${ranks[i]}. ${entry.name} – ${entry.score} ${medal}`;
-                            if (entry.name === username && entry.score === myLastScore1 && myLastScore1 !== null) {
-                                li.classList.add("me");
-                            }
-                            leaderList1.appendChild(li);
-                         }
+                    arr.slice(0, 5).forEach((entry, i) => {
+                        const li = document.createElement("li");
+                        const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "";
+                        li.textContent = `${ranks[i]}. ${entry.name} – ${entry.score} ${medal}`;
+                        if (entry.name === username && entry.score === myLastScore1) {
+                            li.classList.add("me");
+                        }
+                        leaderList1.appendChild(li);
                     });
-                     noLeaderData1.style.display = "none";
+                    noLeaderData1.style.display = "none";
                 }
-                 if (leaderDiv1) leaderDivDiv1.style.display = "block";
+                leaderDiv1.style.display = "block";
             }).catch(error => {
                 console.error("Error fetching leaderboard:", error);
-                 if(leaderList1) leaderList1.innerHTML = "";
-                 if(noLeaderData1) noLeaderData1.style.display = "block";
+                leaderList1.innerHTML = "";
+                noLeaderData1.style.display = "block";
             });
         }
 
-
         function startTimer1() {
-             if (!timerEl1) return;
             timer1 = setInterval(() => {
                 if (isPaused1) return;
                 timeLeft1--;
                 updateTimer1();
-                if (timeLeft1 === 5 && soundEnabled) {
-                     try { q("#countdownSound").currentTime = 0; q("#countdownSound").play(); } catch(e) { console.error("Sound playback error:", e); }
-                }
+                if (timeLeft1 === 5 && soundEnabled) q("#countdownSound").play();
                 if (timeLeft1 <= 0) {
                     clearInterval(timer1);
-                    const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
-                    if (fbk1) fbk1.textContent = lang === "en" ? "Time's up! 🕒" : "時間到！🕒";
-                    if (ansInp1) ansInp1.disabled = true;
+                    const lang = q("#langSelect").value;
+                    fbk1.textContent = lang === "en" ? "Time's up! 🕒" : "時間到！🕒";
+                    ansInp1.disabled = true;
                     myLastScore1 = score1;
                     db.ref("scores").push({ name: username, score: score1, timestamp: Date.now() }).then(() => {
                         refreshLeaderboard1();
@@ -586,26 +542,17 @@
                             highScore1 = score1;
                             localStorage.setItem("highScore1", highScore1);
                             updateHighScore1();
-                            if (soundEnabled) { try { q("#cheerSound").currentTime = 0; q("#cheerSound").play(); } catch(e) { console.error("Cheer sound error:", e); } }
+                            if (soundEnabled) q("#cheerSound").play();
                         }
-                        if (q("#restartBtn1")) q("#restartBtn1").style.display = "inline-block";
-                         if (mistakes1.length > 0) {
-                              showMistakes1();
-                         } else {
-                              refreshLeaderboard1();
-                         }
+                        q("#restartBtn1").style.display = "inline-block";
                     }).catch(error => {
                         console.error("Error saving score:", error);
-                        if (fbk1) fbk1.textContent = lang === "en" ? "Error saving to leaderboard." : "無法保存到排行榜。";
-                        if (q("#restartBtn1")) q("#restartBtn1").style.display = "inline-block";
-                         if (mistakes1.length > 0) {
-                              showMistakes1();
-                         }
+                        fbk1.textContent = lang === "en" ? "Error saving to leaderboard." : "無法保存到排行榜。";
+                        q("#restartBtn1").style.display = "inline-block";
                     });
                 }
             }, 1000);
         }
-
 
         function startGame1() {
             score1 = 0;
@@ -613,141 +560,94 @@
             mistakes1 = [];
             myLastScore1 = null;
             isPaused1 = false;
-             clearInterval(timer1);
             updateScore1();
             updateTimer1();
-             if(mistakesDiv1) mistakesDiv1.style.display = "none";
-             if(leaderDiv1) leaderDiv1.style.display = "none";
-             if(leaderList1) leaderList1.innerHTML = "";
-             if(noLeaderData1) noLeaderData1.style.display = "none";
-             if(q("#restartBtn1")) q("#restartBtn1").style.display = "none";
-             if(q("#pauseOverlay1")) q("#pauseOverlay1").style.display = "none";
-            if (ansInp1) ansInp1.disabled = false;
-            if (fbk1) fbk1.textContent = "";
+            mistakesDiv1.style.display = "none";
+            leaderDiv1.style.display = "none";
+            leaderList1.innerHTML = "";
+            noLeaderData1.style.display = "none";
+            q("#restartBtn1").style.display = "none";
+            q("#pauseOverlay1").style.display = "none";
+            ansInp1.disabled = false;
+            fbk1.textContent = "";
             generateQuestion1();
             startTimer1();
-             if (ansInp1) ansInp1.focus();
         }
 
-        if (ansInp1) {
-             ansInp1.addEventListener("input", e => {
-                if (e.target.value.length > 1) {
-                    e.target.value = e.target.value.slice(0, 1);
-                }
-                const val = parseInt(e.target.value, 10);
-                 if (!isNaN(val)) {
-                     checkAnswer1(val);
-                }
-            });
-             ansInp1.addEventListener("keypress", (e) => {
-                if (e.key === "Enter") {
-                    const val = parseInt(ansInp1.value, 10);
-                     if (!isNaN(val)) {
-                          checkAnswer1(val);
-                     }
-                     e.preventDefault();
-                }
-             });
-        }
+        ansInp1.addEventListener("input", e => {
+            const val = parseInt(e.target.value, 10);
+            if (!isNaN(val)) checkAnswer1(val);
+        });
 
-        if (q("#mistakeBtn1")) {
-             q("#mistakeBtn1").addEventListener("click", () => {
-                if (mistakesDiv1 && leaderDiv1) {
-                    if (mistakesDiv1.style.display === "block") {
-                        mistakesDiv1.style.display = "none";
-                    } else {
-                        showMistakes1();
-                        leaderDiv1.style.display = "none";
-                    }
-                }
-            });
-        }
+        q("#mistakeBtn1").addEventListener("click", () => {
+            if (mistakesDiv1.style.display === "block") {
+                mistakesDiv1.style.display = "none";
+            } else {
+                showMistakes1();
+            }
+        });
 
-        if (q("#leaderBtn1")) {
-            q("#leaderBtn1").addEventListener("click", () => {
-                if (leaderDiv1 && mistakesDiv1 && noLeaderData1) {
-                    if (leaderDiv1.style.display === "block") {
-                        leaderDiv1.style.display = "none";
-                        noLeaderData1.style.display = "none";
-                    } else {
-                        refreshLeaderboard1();
-                        mistakesDiv1.style.display = "none";
-                    }
-                }
-            });
-        }
+        q("#leaderBtn1").addEventListener("click", () => {
+            if (leaderDiv1.style.display === "block") {
+                leaderDiv1.style.display = "none";
+                noLeaderData1.style.display = "none";
+            } else {
+                refreshLeaderboard1();
+                mistakesDiv1.style.display = "none";
+            }
+        });
 
-        if (q("#pauseBtn1")) {
-            q("#pauseBtn1").addEventListener("click", () => {
-                 const pauseOverlay = q("#pauseOverlay1");
-                 if (pauseOverlay && ansInp1) {
-                    isPaused1 = true;
-                    clearInterval(timer1);
-                    pauseOverlay.style.display = "block";
-                    ansInp1.disabled = true;
-                 }
-            });
-        }
+        q("#pauseBtn1").addEventListener("click", () => {
+            isPaused1 = true;
+            clearInterval(timer1);
+            q("#pauseOverlay1").style.display = "block";
+        });
 
-        if (q("#resumeBtn1")) {
-            q("#resumeBtn1").addEventListener("click", () => {
-                 const pauseOverlay = q("#pauseOverlay1");
-                 if (pauseOverlay && ansInp1) {
-                    isPaused1 = false;
-                    pauseOverlay.style.display = "none";
-                    startTimer1();
-                    ansInp1.disabled = false;
-                    ansInp1.focus();
-                 }
-            });
-        }
+        q("#resumeBtn1").addEventListener("click", () => {
+            isPaused1 = false;
+            q("#pauseOverlay1").style.display = "none";
+            startTimer1();
+        });
 
-        if (q("#restartBtn1")) {
-            q("#restartBtn1").addEventListener("click", () => {
-                 window.location.href = 'index.html';
-            });
-        }
+        q("#restartBtn1").addEventListener("click", () => {
+            q("#gameSelection").style.display = "block";
+            q("#game1").style.display = "none";
+        });
 
-
-        // --- Game 2 Variables and Functions ---
         const TARGET_SCORE2 = 100, CORRECT_POINTS2 = 2, WRONG_POINTS2 = -1;
-        let score2 = 0, startTime2, timerInterval2, bestTime2 = parseFloat(localStorage.getItem("bestTime2") || null), mistakes2 = [], num1_2, num2_2, myLastTime2 = null;
-        let isPaused2 = false, gameStarted2 = false;
+        let score2 = 0, startTime2, timerInterval2, bestTime2 = parseFloat(localStorage.getItem("bestTime2") || ""), mistakes2 = [], num1_2, num2_2, myLastTime2 = null;
+        let isPaused2 = false;
         const num1El2 = q("#num1_2"), num2El2 = q("#num2_2"), ansInp2 = q("#answerInput2"), ansFld2 = q("#answerField2"),
               scoreEl2 = q("#score2"), timeUsedEl2 = q("#timeUsed2"), bestEl2 = q("#bestTime2"), fbk2 = q("#feedback2"),
-              progressBar2 = q("#progressBar2"), mistakesDiv2 = q("#mistakes2"), leaderDiv2 = q("#leaderboard2"), leaderList2 = q("#leaderList2"), noLeaderData2 = q("#noLeaderData2");
+              mistakesDiv2 = q("#mistakes2"), leaderDiv2 = q("#leaderboard2"), leaderList2 = q("#leaderList2"), noLeaderData2 = q("#noLeaderData2");
 
         function updateScore2() {
-             if (!scoreEl2 || !progressBar2) return;
             score2 = Math.max(0, score2);
-            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
+            const lang = q("#langSelect").value;
             scoreEl2.innerHTML = `<span id="scoreText2_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Score: </span><span id="scoreText2_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">得分: </span>${score2}`;
-            progressBar2.style.width = `${Math.min(100, (score2 / TARGET_SCORE2) * 100)}%`;
-            progressBar2.style.backgroundColor = score2 >= TARGET_SCORE2 ? 'var(--green)' : 'var(--orange)';
+            q("#progressBar2").style.width = `${(score2 / TARGET_SCORE2) * 100}%`;
         }
 
         function updateTimer2() {
-             if (!timeUsedEl2 || !gameStarted2) return;
-             const elapsed = isPaused2 ? timeUsed2 : (Date.now() - (startTime2 - timeUsed2 * 1000)) / 1000;
-             timeUsed2 = elapsed;
-            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
-            timeUsedEl2.innerHTML = `<span id="timeUsedText2_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Time Used: </span><span id="timeUsedText2_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">已用時間: </span>${timeUsed2.toFixed(1)} s`;
+            const t = ((Date.now() - startTime2) / 1000).toFixed(1);
+            const lang = q("#langSelect").value;
+            timeUsedEl2.innerHTML = `<span id="timeUsedText2_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Time Used: </span><span id="timeUsedText2_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">已用時間: </span>${t} s`;
         }
 
         function generateQuestion2() {
             num1_2 = Math.floor(Math.random() * 9) + 1;
             num2_2 = Math.floor(Math.random() * 9) + 1;
-            if (num1El2) num1El2.textContent = num1_2;
-            if (num2El2) num2El2.textContent = num2_2;
-             if (ansInp2) { ansInp2.value = ""; ansInp2.focus(); }
-             if (fbk2) fbk2.textContent = "";
-             if (ansFld2) ansFld2.textContent = "?";
+            num1El2.textContent = num1_2;
+            num2El2.textContent = num2_2;
+            ansInp2.value = "";
+            ansInp2.focus();
+            fbk2.textContent = "";
+            ansFld2.textContent = "?";
         }
 
         function checkAnswer2(v) {
-             if (!ansFld2) return;
             const correct = (num1_2 + num2_2) % 10;
-            if (!isNaN(v) && v === correct) {
+            if (v === correct) {
                 ansFld2.innerHTML = `${v} <span class="correct">✔</span>`;
                 score2 += CORRECT_POINTS2;
                 updateScore2();
@@ -766,8 +666,7 @@
         }
 
         function showMistakes2() {
-            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
-             if (!mistakesDiv2 || !leaderDiv2) return;
+            const lang = q("#langSelect").value;
             mistakesDiv2.innerHTML = `<h3><span id="mistakesTitle2_en" style="display:${lang === 'en' ? 'block' : 'none'}">❌ Mistakes</span><span id="mistakesTitle2_zh" style="display:${lang === 'zh' ? 'block' : 'none'}">❌ 錯題</span></h3>`;
             if (mistakes2.length === 0) {
                 mistakesDiv2.innerHTML += `<p><span id="noMistakes2_en" style="display:${lang === 'en' ? 'block' : 'none'}">No mistakes! 🎉</span><span id="noMistakes2_zh" style="display:${lang === 'zh' ? 'block' : 'none'}">沒有錯誤！🎉</span></p>`;
@@ -783,283 +682,157 @@
         }
 
         function refreshLeaderboard2() {
-             if (!leaderDiv2 || !leaderList2 || !noLeaderData2) return;
             db.ref("times").orderByChild("time").limitToFirst(5).once("value").then(snap => {
                 const arr = [];
                 snap.forEach(ch => {
                     const val = ch.val();
                     if (val && val.name && typeof val.time === "number" && !isNaN(val.time) && val.ts) {
-                         arr.push({ name: val.name, time: val.time, ts: val.ts });
+                        arr.push(val);
                     }
                 });
 
-                 const virtualData2 = [
+                // Add virtual data if less than 5 entries
+                const virtualData2 = [
                     { name: "Snoopy", time: 78, ts: Date.now() - 1000 },
                     { name: "小美", time: 84, ts: Date.now() - 2000 },
                     { name: "張玲麗", time: 92, ts: Date.now() - 3000 },
                     { name: "Richard", time: 99, ts: Date.now() - 4000 },
                     { name: "Tommy Lee", time: 105, ts: Date.now() - 5000 }
                 ];
-                 let combinedArr = [...arr];
-                 if (myLastTime2 !== null) {
-                      const userEntry = combinedArr.find(entry => entry.name === username && entry.time === myLastTime2);
-                       if (!userEntry) {
-                           combinedArr.push({ name: username, time: myLastTime2, ts: Date.now() });
-                       }
-                 }
+                const neededEntries = 5 - arr.length;
+                if (neededEntries > 0) {
+                    arr.push(...virtualData2.slice(0, neededEntries));
+                }
 
-                 combinedArr.sort((a, b) => a.time - b.time || a.ts - b.ts);
-
-                 const top5Map = new Map();
-                 for(const entry of combinedArr) {
-                      const key = `${entry.name}-${entry.time}`;
-                      if (!top5Map.has(key)) {
-                           top5Map.set(key, entry);
-                      }
-                      if (top5Map.size >= 5) break;
-                 }
-                 const top5Arr = Array.from(top5Map.values());
-
-
-                 const currentTopCount = top5Arr.length;
-                 if (currentTopCount < 5) {
-                     const virtualToAdd = virtualData2.filter(vEntry =>
-                         !top5Arr.some(rEntry => rEntry.name === vEntry.name && rEntry.time === vEntry.time)
-                     ).slice(0, 5 - currentTopCount);
-                     top5Arr.push(...virtualToAdd);
-                      top5Arr.sort((a, b) => a.time - b.time || a.ts - b.ts);
-                 }
-
-
-                if (top5Arr.length === 0) {
+                arr.sort((a, b) => a.time - b.time || a.ts - b.ts);
+                if (arr.length === 0) {
                     leaderList2.innerHTML = "";
                     noLeaderData2.style.display = "block";
                 } else {
-                     leaderList2.innerHTML = "";
+                    leaderList2.innerHTML = "";
                     const ranks = [];
                     let currentRank = 1;
-                    for (let i = 0; i < top5Arr.length; i++) {
+                    for (let i = 0; i < arr.length; i++) {
                         if (i === 0) {
                             ranks[i] = currentRank;
-                        } else if (top5Arr[i].time === top5Arr[i - 1].time) {
+                        } else if (arr[i].time === arr[i - 1].time) {
                             ranks[i] = ranks[i - 1];
                         } else {
                             ranks[i] = i + 1;
                             currentRank = i + 1;
                         }
                     }
-                    top5Arr.slice(0, 5).forEach((item, i) => {
-                        if(leaderList2) {
-                            const li = document.createElement("li");
-                            const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "";
-                            li.textContent = `${ranks[i]}. ${item.name} – ${item.time.toFixed(1)} s ${medal}`;
-                            if (item.name === username && item.time === myLastTime2 && myLastTime2 !== null) {
-                                li.classList.add("me");
-                            }
-                            leaderList2.appendChild(li);
-                         }
+                    arr.slice(0, 5).forEach((item, i) => {
+                        const li = document.createElement("li");
+                        const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "";
+                        li.textContent = `${ranks[i]}. ${item.name} – ${item.time.toFixed(1)} s ${medal}`;
+                        if (item.name === username && item.time === myLastTime2) {
+                            li.classList.add("me");
+                        }
+                        leaderList2.appendChild(li);
                     });
                     noLeaderData2.style.display = "none";
                 }
-                 if (leaderDiv2) leaderDiv2.style.display = "block";
+                leaderDiv2.style.display = "block";
             }).catch(error => {
                 console.error("Error fetching leaderboard:", error);
-                 if(leaderList2) leaderList2.innerHTML = "";
-                 if(noLeaderData2) noLeaderData2.style.display = "block";
+                leaderList2.innerHTML = "";
+                noLeaderData2.style.display = "block";
             });
         }
 
-
         function finishGame2() {
-             if (!timeUsed2 || !fbk2 || !ansInp2 || !q("#restartBtn2")) return;
             clearInterval(timerInterval2);
             ansInp2.disabled = true;
-            const tSec = timeUsed2.toFixed(1);
+            const tSec = ((Date.now() - startTime2) / 1000).toFixed(1);
             myLastTime2 = parseFloat(tSec);
-            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
+            const lang = q("#langSelect").value;
             fbk2.innerHTML = `<span style="color:var(--orange);font-size:1.4em">${lang === 'en' ? 'Finished in' : '完成時間'}: ${tSec} s</span>`;
             q("#restartBtn2").style.display = "inline-block";
-            if (!bestTime2 || myLastTime2 < bestTime2) {
-                bestTime2 = myLastTime2;
+            if (!bestTime2 || tSec < bestTime2) {
+                bestTime2 = tSec;
                 localStorage.setItem("bestTime2", bestTime2);
-                 if(bestEl2) {
-                     bestEl2.innerHTML = `<span id="bestTimeText2_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Best Time: </span><span id="bestTimeText2_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最佳時間: </span>${bestTime2.toFixed(1)} s`;
-                 }
-                if (soundEnabled) { try { q("#cheerSound").currentTime = 0; q("#cheerSound").play(); } catch(e) { console.error("Cheer sound error:", e); } }
+                bestEl2.innerHTML = `<span id="bestTimeText2_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Best Time: </span><span id="bestTimeText2_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最佳時間: </span>${bestTime2} s`;
+                if (soundEnabled) q("#cheerSound").play();
             }
             db.ref("times").push({ name: username, time: parseFloat(tSec), ts: Date.now() }).then(() => {
                 refreshLeaderboard2();
-                 if (mistakes2.length > 0) {
-                      showMistakes2();
-                 } else {
-                      refreshLeaderboard2();
-                 }
             }).catch(error => {
                 console.error("Error saving time:", error);
                 fbk2.innerHTML += `<br><span style="color:var(--red)">${lang === 'en' ? 'Error saving to leaderboard.' : '無法保存到排行榜。'}</span>`;
-                 if (mistakes2.length > 0) {
-                      showMistakes2();
-                 }
             });
         }
-
 
         function startGame2() {
             score2 = 0;
-            timeUsed2 = 0;
-            mistakes2 = [];
             myLastTime2 = null;
             isPaused2 = false;
-            gameStarted2 = true;
             updateScore2();
-            updateTimer2();
-             if(mistakesDiv2) mistakesDiv2.style.display = "none";
-             if(leaderDiv2) leaderDiv2.style.display = "none";
-             if(leaderList2) leaderList2.innerHTML = "";
-             if(noLeaderData2) noLeaderData2.style.display = "none";
-             if(q("#restartBtn2")) q("#restartBtn2").style.display = "none";
-             if(q("#pauseOverlay2")) q("#pauseOverlay2").style.display = "none";
-            if (ansInp2) ansInp2.disabled = false;
-            if (fbk2) fbk2.textContent = "";
-            const lang = q("#langSelect") ? q("#langSelect").value : savedLang;
-             if(bestEl2) {
-                bestEl2.innerHTML = `<span id="bestTimeText2_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Best Time: </span><span id="bestTimeText2_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最佳時間: </span>${bestTime2 ? bestTime2.toFixed(1) + ' s' : '–'}`;
-             }
+            ansInp2.disabled = false;
+            mistakes2 = [];
+            mistakesDiv2.style.display = "none";
+            leaderDiv2.style.display = "none";
+            leaderList2.innerHTML = "";
+            noLeaderData2.style.display = "none";
+            q("#restartBtn2").style.display = "none";
+            q("#pauseOverlay2").style.display = "none";
+            const lang = q("#langSelect").value;
+            bestEl2.innerHTML = `<span id="bestTimeText2_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Best Time: </span><span id="bestTimeText2_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最佳時間: </span>${bestTime2 ? bestTime2 + ' s' : '–'}`;
             startTime2 = Date.now();
-            clearInterval(timerInterval2);
-             timerInterval2 = setInterval(() => {
+            updateTimer2();
+            timerInterval2 = setInterval(() => {
                 if (!isPaused2) updateTimer2();
             }, 100);
             generateQuestion2();
-             if (ansInp2) ansInp2.focus();
         }
 
+        ansInp2.addEventListener("input", e => {
+            const v = parseInt(e.target.value, 10);
+            if (!isNaN(v)) checkAnswer2(v);
+        });
 
-        if (ansInp2) {
-            ansInp2.addEventListener("input", e => {
-                if (e.target.value.length > 1) {
-                    e.target.value = e.target.value.slice(0, 1);
-                }
-                const v = parseInt(e.target.value, 10);
-                 if (!isNaN(v)) {
-                      checkAnswer2(v);
-                 }
-            });
-             ansInp2.addEventListener("keypress", (e) => {
-                if (e.key === "Enter") {
-                    const v = parseInt(ansInp2.value, 10);
-                     if (!isNaN(v)) {
-                          checkAnswer2(v);
-                     }
-                     e.preventDefault();
-                }
-             });
-        }
-
-        if (q("#mistakeBtn2")) {
-            q("#mistakeBtn2").addEventListener("click", () => {
-                if (mistakesDiv2 && leaderDiv2) {
-                    if (mistakesDiv2.style.display === "block") {
-                        mistakesDiv2.style.display = "none";
-                    } else {
-                        showMistakes2();
-                        leaderDiv2.style.display = "none";
-                    }
-                }
-            });
-        }
-
-        if (q("#leaderBtn2")) {
-             q("#leaderBtn2").addEventListener("click", () => {
-                if (leaderDiv2 && mistakesDiv2 && noLeaderData2) {
-                    if (leaderDiv2.style.display === "block") {
-                        leaderDiv2.style.display = "none";
-                        noLeaderData2.style.display = "none";
-                    } else {
-                        refreshLeaderboard2();
-                        mistakesDiv2.style.display = "none";
-                    }
-                }
-            });
-        }
-
-        if (q("#pauseBtn2")) {
-            q("#pauseBtn2").addEventListener("click", () => {
-                 const pauseOverlay = q("#pauseOverlay2");
-                 if (pauseOverlay && ansInp2) {
-                    isPaused2 = true;
-                    clearInterval(timerInterval2);
-                    pauseOverlay.style.display = "block";
-                    ansInp2.disabled = true;
-                 }
-            });
-        }
-
-        if (q("#resumeBtn2")) {
-            q("#resumeBtn2").addEventListener("click", () => {
-                 const pauseOverlay = q("#pauseOverlay2");
-                 if (pauseOverlay && ansInp2) {
-                    isPaused2 = false;
-                    pauseOverlay.style.display = "none";
-                    startTime2 = Date.now() - timeUsed2 * 1000;
-                    timerInterval2 = setInterval(() => {
-                        if (!isPaused2) updateTimer2();
-                    }, 100);
-                    ansInp2.disabled = false;
-                    ansInp2.focus();
-                 }
-            });
-        }
-
-        if (q("#restartBtn2")) {
-            q("#restartBtn2").addEventListener("click", () => {
-                 window.location.href = 'index.html';
-            });
-        }
-
-        // --- Initialisation based on URL Hash ---
-        // Find the game divs
-        const game1Div = q("#game1");
-        const game2Div = q("#game2");
-
-        // Function: Hide all game divs initially
-        function hideAllGames() {
-            if(game1Div) game1Div.style.display = 'none';
-            if(game2Div) game2Div.style.display = 'none';
-        }
-
-        // Function: Start game based on mode from URL hash
-        function startGameByMode() {
-            hideAllGames();
-
-            const hash = window.location.hash;
-
-            if (hash === '#mode=1min') {
-                if(game1Div) game1Div.style.display = 'block';
-                startGame1();
-            } else if (hash === '#mode=100pts') {
-                if(game2Div) game2Div.style.display = 'block';
-                startGame2();
+        q("#mistakeBtn2").addEventListener("click", () => {
+            if (mistakesDiv2.style.display === "block") {
+                mistakesDiv2.style.display = "none";
             } else {
-                 console.warn("No valid game mode specified in URL hash. Redirecting to index.html");
-                 window.location.href = 'index.html';
+                showMistakes2();
             }
-            if(game1Div && game1Div.style.display === 'block') {
-                const ansInput1 = q("#answerInput1");
-                if (ansInput1) ansInput1.focus();
-            }
-            if(game2Div && game2Div.style.display === 'block') {
-                 const ansInput2 = q("#answerInput2");
-                 if (ansInput2) ansInput2.focus();
-            }
-        }
+        });
 
-        document.addEventListener('DOMContentLoaded', startGameByMode);
+        q("#leaderBtn2").addEventListener("click", () => {
+            if (leaderDiv2.style.display === "block") {
+                leaderDiv2.style.display = "none";
+                noLeaderData2.style.display = "none";
+            } else {
+                refreshLeaderboard2();
+                mistakesDiv2.style.display = "none";
+            }
+        });
 
+        q("#pauseBtn2").addEventListener("click", () => {
+            isPaused2 = true;
+            clearInterval(timerInterval2);
+            q("#pauseOverlay2").style.display = "block";
+        });
+
+        q("#resumeBtn2").addEventListener("click", () => {
+            isPaused2 = false;
+            q("#pauseOverlay2").style.display = "none";
+            timerInterval2 = setInterval(() => {
+                if (!isPaused2) updateTimer2();
+            }, 100);
+        });
+
+        q("#restartBtn2").addEventListener("click", () => {
+            q("#gameSelection").style.display = "block";
+            q("#game2").style.display = "none";
+        });
+
+        updateScore1();
+        updateHighScore1();
+        updateTimer1();
+        updateScore2();
         switchLang();
-
-        hideAllGames();
-
     </script>
 </body>
 </html>
