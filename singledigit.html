@@ -1,22 +1,48 @@
-<!DOCTYPE html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Math Game Hub</title>
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="theme-color" content="#4682b4" />
-    <link rel="manifest" href="manifest.json" />
-    <script>
-        if ("serviceWorker" in navigator) {
-            window.addEventListener("load", () => {
-                navigator.serviceWorker.register("service-worker.js")
-                    .catch(console.error);
-            });
-        }
-    </script>
-
     <audio id="okaySound" preload="auto"><source src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/okay.mp3" type="audio/mp3" /></audio>
     <audio id="welldoneSound" preload="auto"><source src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/welldone.mp3" type="audio/mp3" /></audio>
     <audio id="correctSound" preload="auto"><source src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/correct.mp3" type="audio/mp3" /></audio>
@@ -228,6 +254,11 @@
         <p><span id="selectSubtitle_en">Choose a game to play!</span><span id="selectSubtitle_zh" style="display:none;">選擇一個遊戲開始玩吧！</span></p>
         <button id="gameSelectBtn1"><span id="game1Btn_en">Super Speedy Sums Splash (1 min)</span><span id="game1Btn_zh" style="display:none;">超級快速加法遊戲 (1 分鐘)</span></button>
         <button id="gameSelectBtn2"><span id="game2Btn_en">One Hundred Rush (to 100 points)</span><span id="game2Btn_zh" style="display:none;">最快一百分 (到 100 分)</span></button>
+
+        <a href="index.html" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 6px; font-size: 1.2em;">
+             <span id="backToIndexLinkSelect_en">Back to Index</span>
+             <span id="backToIndexLinkSelect_zh" style="display:none;">返回主選單</span>
+        </a>
     </div>
 
     <div id="game1" class="container" style="display:none;">
@@ -256,6 +287,10 @@
             <p id="noLeaderData1" style="display:none;color:var(--blue);"><span id="noLeaderData1_en">No leaderboard data available.</span><span id="noLeaderData1_zh" style="display:none;">暫無排行榜數據。</span></p>
         </div>
         <button id="restartBtn1"><span id="restartBtn1_en">Play Again</span><span id="restartBtn1_zh" style="display:none;">再玩一次</span></button>
+         <a href="index.html" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 6px; font-size: 1.2em;">
+             <span id="backToIndexLink1_en">Back to Index</span>
+             <span id="backToIndexLink1_zh" style="display:none;">返回主選單</span>
+        </a>
         <div id="pauseOverlay1" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10; text-align:center; color:white; font-size:2em; padding-top:20%;">
             <span id="pausedText1_en">Paused</span><span id="pausedText1_zh" style="display:none;">已暫停</span><br>
             <button id="resumeBtn1">▶️ <span id="resumeBtn1_en">Resume</span><span id="resumeBtn1_zh" style="display:none;">繼續</span></button>
@@ -291,6 +326,10 @@
             <p id="noLeaderData2" style="display:none;color:var(--blue);"><span id="noLeaderData2_en">No leaderboard data available.</span><span id="noLeaderData2_zh" style="display:none;">暫無排行榜數據。</span></p>
         </div>
         <button id="restartBtn2"><span id="restartBtn2_en">Play Again</span><span id="restartBtn2_zh" style="display:none;">再玩一次</span></button>
+         <a href="index.html" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 6px; font-size: 1.2em;">
+             <span id="backToIndexLink2_en">Back to Index</span>
+             <span id="backToIndexLink2_zh" style="display:none;">返回主選單</span>
+        </a>
         <div id="pauseOverlay2" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10; text-align:center; color:white; font-size:2em; padding-top:20%;">
             <span id="pausedText2_en">Paused</span><span id="pausedText2_zh" style="display:none;">已暫停</span><br>
             <button id="resumeBtn2">▶️ <span id="resumeBtn2_en">Resume</span><span id="resumeBtn2_zh" style="display:none;">繼續</span></button>
@@ -322,14 +361,26 @@
         const q = s => document.querySelector(s);
 
         // Sound Toggle
-        let soundEnabled = true;
+        let soundEnabled = true; // Default sound state
+        // Check if sound preference is saved in localStorage
+        const savedSound = localStorage.getItem("soundEnabled");
+        if (savedSound !== null) {
+            soundEnabled = savedSound === "true";
+        }
+
         q("#soundToggle").addEventListener("click", () => {
             soundEnabled = !soundEnabled;
-            const lang = q("#langSelect").value;
-            q("#soundToggle").innerHTML = lang === "en" ?
-                `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none;">音效: ${soundEnabled ? "開" : "關"}</span>` :
-                `<span id="soundToggle_en" style="display:none;">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
+            localStorage.setItem("soundEnabled", soundEnabled); // Save sound preference
+            updateSoundButtonText(); // Update button text
         });
+
+        function updateSoundButtonText() {
+             const lang = q("#langSelect").value;
+             q("#soundToggle").innerHTML = lang === "en" ?
+                 `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none;">音效: ${soundEnabled ? "開" : "關"}</span>` :
+                 `<span id="soundToggle_en" style="display:none;">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
+         }
+
 
         function playRandomCorrectSound() {
             if (!soundEnabled) return;
@@ -346,6 +397,8 @@
                 q("#c6Sound")
             ];
             const randomSound = correctSounds[Math.floor(Math.random() * correctSounds.length)];
+            // Reset audio to beginning before playing
+            randomSound.currentTime = 0;
             randomSound.play();
         }
 
@@ -353,30 +406,52 @@
         const langSelect = q("#langSelect");
         const savedLang = localStorage.getItem("lang") || "en";
         langSelect.value = savedLang;
-
+        
         function switchLang() {
             const lang = q("#langSelect").value;
             document.querySelectorAll("[id$='_en']").forEach(el => el.style.display = lang === "en" ? "inline" : "none");
             document.querySelectorAll("[id$='_zh']").forEach(el => el.style.display = lang === "zh" ? "inline" : "none");
+
+            // Update texts that are not direct spans (like sound toggle)
+            updateSoundButtonText();
+
+            // Update score/timer/leaderboard displays to refresh language specific text
             updateScore1();
             updateHighScore1();
             updateTimer1();
             if (q("#mistakes1").style.display === "block") showMistakes1();
-            if (q("#leaderboard1").style.display === "block") refreshLeaderboard1();
+            if (q("#leaderboard1").style.display === "block") refreshLeaderboard1(); // Refresh to update leaderboard language
             updateScore2();
-            updateTimer2();
-            bestEl2.innerHTML = `<span id="bestTimeText2_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Best Time: </span><span id="bestTimeText2_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最佳時間: </span>${bestTime2 ? bestTime2 + ' s' : '–'}`;
+             // Best time update needs to handle language
+             const bestTime2Display = bestTime2 ? bestTime2 + ' s' : (lang === 'en' ? '–' : '–'); // Assuming "-" is universal or add translation if needed
+             q("#bestTime2").innerHTML = `<span id="bestTimeText2_en" style="display:${lang === 'en' ? 'inline' : 'none'}">Best Time: </span><span id="bestTimeText2_zh" style="display:${lang === 'zh' ? 'inline' : 'none'}">最佳時間: </span>${bestTime2Display}`;
+
+            updateTimer2(); // This function updates timeUsedEl2 which has lang spans inside
             if (q("#mistakes2").style.display === "block") showMistakes2();
-            if (q("#leaderboard2").style.display === "block") refreshLeaderboard2();
-            q("#soundToggle").innerHTML = lang === "en" ?
-                `<span id="soundToggle_en">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh" style="display:none;">音效: ${soundEnabled ? "開" : "關"}</span>` :
-                `<span id="soundToggle_en" style="display:none;">Sound: ${soundEnabled ? "On" : "Off"}</span><span id="soundToggle_zh">音效: ${soundEnabled ? "開" : "關"}</span>`;
+            if (q("#leaderboard2").style.display === "block") refreshLeaderboard2(); // Refresh to update leaderboard language
+
+            // Update Pause Overlay text language
+             const pauseOverlay1 = q("#pauseOverlay1");
+             if (pauseOverlay1.style.display === "block") {
+                 q("#pausedText1_en").style.display = lang === "en" ? "inline" : "none";
+                 q("#pausedText1_zh").style.display = lang === "zh" ? "inline" : "none";
+             }
+            const pauseOverlay2 = q("#pauseOverlay2");
+             if (pauseOverlay2.style.display === "block") {
+                 q("#pausedText2_en").style.display = lang === "en" ? "inline" : "none";
+                 q("#pausedText2_zh").style.display = lang === "zh" ? "inline" : "none";
+             }
+
         }
 
         langSelect.addEventListener("change", () => {
             localStorage.setItem("lang", langSelect.value);
             switchLang();
         });
+
+        // Initial language switch and sound button update on page load
+        switchLang();
+        updateSoundButtonText(); // Call initially to set correct sound button text
 
         q("#gameSelectBtn1").addEventListener("click", () => {
             q("#gameSelection").style.display = "none";
@@ -828,11 +903,13 @@
             q("#game2").style.display = "none";
         });
 
+        // Initial calls to set up display and state
         updateScore1();
         updateHighScore1();
         updateTimer1();
         updateScore2();
-        switchLang();
+        // Initial language switch is handled by the listener and call at the end
+
     </script>
 </body>
 </html>
