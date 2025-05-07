@@ -24,7 +24,7 @@
             width: 100%;
             max-width: 700px; /* Match container width */
         }
-        .header-controls span, 
+        .header-controls span,
         .header-controls select,
         .header-controls button {
             font-size: 1em;
@@ -222,12 +222,21 @@
     </button>
 
     <script>
+        console.log('Script starting'); // Debug message
+
         const mainSelection = document.getElementById('mainGameSelection');
+        console.log('mainGameSelection element:', mainSelection); // Debug message
+
+        if (!mainSelection) {
+            console.error('Error: #mainGameSelection element not found!');
+            // You could add a visual error message here if needed
+        }
+
         const gameFrame = document.getElementById('gameFrame');
         const backButton = document.getElementById('backButton');
         const gameLinks = document.querySelectorAll('#gameList a');
         const langSelect = document.getElementById('langSelect');
-        const soundToggleButton = document.getElementById('soundToggle'); // Added sound toggle reference
+        const soundToggleButton = document.getElementById('soundToggle');
 
         // Initialize language based on localStorage or default to English
         const savedLang = localStorage.getItem("lang") || "en";
@@ -253,6 +262,7 @@
         // --- Iframe Game Loading Logic ---
         gameLinks.forEach(link => {
             link.addEventListener('click', function(event) {
+                console.log('Game link clicked:', this.href); // Debug message
                 event.preventDefault(); // Prevent default link navigation
                 const gameUrl = this.href;
 
@@ -260,10 +270,12 @@
                 gameFrame.style.display = 'block';
                 backButton.style.display = 'block';
                 gameFrame.src = gameUrl;
+                 console.log('Iframe src set to:', gameUrl); // Debug message
             });
         });
 
         backButton.addEventListener('click', function() {
+             console.log('Back button clicked'); // Debug message
             gameFrame.style.display = 'none';
             gameFrame.src = 'about:blank'; // Clear iframe content
             backButton.style.display = 'none';
@@ -272,6 +284,15 @@
 
         // Disable sound toggle on index page as sound is handled within iframed games
         soundToggleButton.disabled = true; // Or remove this button if not needed in index
+
+         // Ensure the main selection is visible on initial load (defensive check)
+         // Removed this defensive check as it might interfere if something else is hiding it.
+         // Let's rely on the initial HTML/CSS state.
+         // mainSelection.style.display = 'block';
+         // gameFrame.style.display = 'none';
+         // backButton.style.display = 'none';
+
+          console.log('Initial script execution finished.'); // Debug message
     </script>
 </body>
 </html>
