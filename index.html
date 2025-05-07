@@ -35,7 +35,7 @@
             max-width: 700px;
             margin: auto;
             background: #fff;
-            padding: 30px;
+            padding: 30px 25px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 100%;
@@ -104,34 +104,17 @@
             color: #007bff; /* Text color */
         }
 
-        iframe {
-            width: 100%;
-            height: 80vh; /* Adjust as needed */
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            display: none; /* Hidden by default */
-            margin-top: 20px; /* Space above iframe */
-        }
-        #backButton {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            display: none; /* Hidden by default */
-            font-size: 1em;
-        }
-        #backButton:hover {
-            background-color: #5a6268;
-        }
          /* Language specific display */
         .lang-en { display: inline; }
         .lang-zh { display: none; }
         body.lang-zh .lang-en { display: none; }
         body.lang-zh .lang-zh { display: inline; }
+
+        /* Removed iframe and back button styles as they are no longer used */
+        /*
+        iframe { display: none; ... }
+        #backButton { display: none; ... }
+        */
     </style>
 </head>
 <body>
@@ -160,7 +143,7 @@
         <ul id="gameList">
             <li>
                 <a href="singledigit.html">
-                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game1.png" alt="Single Digit Game 1 Placeholder">
+                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game1.png" alt="Single Digit Game 1">
                     <span class="game-title">
                         <span class="lang-en">Single Digit: Super Speedy Sums Splash (1 min)</span>
                         <span class="lang-zh">個位數加法: 超級快速加法遊戲 (1 分鐘)</span>
@@ -169,7 +152,7 @@
             </li>
             <li>
                 <a href="singledigit.html#game2">
-                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game2.png" alt="Single Digit Game 2 Placeholder">
+                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game2.png" alt="Single Digit Game 2">
                      <span class="game-title">
                         <span class="lang-en">Single Digit: One Hundred Rush (to 100 points)</span>
                         <span class="lang-zh">個位數加法: 最快一百分 (到 100 分)</span>
@@ -178,7 +161,7 @@
             </li>
             <li>
                 <a href="2digits_h.html">
-                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game3.png" alt="2 Digits Horizontal Game 1 Placeholder">
+                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game3.png" alt="2 Digits Horizontal Game 1">
                      <span class="game-title">
                         <span class="lang-en">2 Digits (Horiz): Super Speedy Sums Splash (1 min)</span>
                         <span class="lang-zh">兩位數加法 (橫式): 超級快速加法遊戲 (1 分鐘)</span>
@@ -187,7 +170,7 @@
             </li>
             <li>
                 <a href="2digits_h.html#game4">
-                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game4.png" alt="2 Digits Horizontal Game 2 Placeholder">
+                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game4.png" alt="2 Digits Horizontal Game 2">
                      <span class="game-title">
                         <span class="lang-en">2 Digits (Horiz): One Hundred Rush (to 100 points)</span>
                         <span class="lang-zh">兩位數加法 (橫式): 最快一百分 (到 100 分)</span>
@@ -196,7 +179,7 @@
             </li>
             <li>
                 <a href="2digits_v.html">
-                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game5.png" alt="2 Digits Vertical Game 1 Placeholder">
+                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game5.png" alt="2 Digits Vertical Game 1">
                      <span class="game-title">
                         <span class="lang-en">2 Digits (Vertical): Super Speedy Sums Splash (1 min)</span>
                         <span class="lang-zh">兩位數加法 (直式): 超級快速加法遊戲 (1 分鐘)</span>
@@ -205,7 +188,7 @@
             </li>
             <li>
                 <a href="2digits_v.html#game4">
-                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game6.png" alt="2 Digits Vertical Game 2 Placeholder">
+                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game6.png" alt="2 Digits Vertical Game 2">
                      <span class="game-title">
                         <span class="lang-en">2 Digits (Vertical): One Hundred Rush (to 100 points)</span>
                         <span class="lang-zh">兩位數加法 (直式): 最快一百分 (到 100 分)</span>
@@ -215,26 +198,8 @@
         </ul>
     </div>
 
-    <iframe id="gameFrame" src="about:blank"></iframe>
-    <button id="backButton">
-         <span class="lang-en">Back to Game Selection</span>
-         <span class="lang-zh">返回遊戲選擇</span>
-    </button>
-
     <script>
-        console.log('Script starting'); // Debug message
-
-        const mainSelection = document.getElementById('mainGameSelection');
-        console.log('mainGameSelection element:', mainSelection); // Debug message
-
-        if (!mainSelection) {
-            console.error('Error: #mainGameSelection element not found!');
-            // You could add a visual error message here if needed
-        }
-
-        const gameFrame = document.getElementById('gameFrame');
-        const backButton = document.getElementById('backButton');
-        const gameLinks = document.querySelectorAll('#gameList a');
+        // Language and Sound Toggle Logic (Kept from previous version)
         const langSelect = document.getElementById('langSelect');
         const soundToggleButton = document.getElementById('soundToggle');
 
@@ -249,50 +214,59 @@
             document.body.classList.add(`lang-${lang}`);
             localStorage.setItem("lang", lang);
              // The sound toggle button's text is also updated via CSS display based on body class
+            // Update sound button text explicitly after language switch
+             updateSoundButtonText();
         }
+
+        // Function to update the sound button text based on current language and state
+         function updateSoundButtonText() {
+             const lang = langSelect.value; // Use the current selected language
+             const soundState = localStorage.getItem("soundEnabled") === "true"; // Get current sound state
+             const soundTextEn = `Sound: ${soundState ? "On" : "Off"}`;
+             const soundTextZh = `音效: ${soundState ? "開" : "關"}`;
+
+             // Update the spans inside the sound button
+             const soundSpanEn = soundToggleButton.querySelector('#soundToggle_en');
+             const soundSpanZh = soundToggleButton.querySelector('#soundToggle_zh');
+
+             if(soundSpanEn) soundSpanEn.textContent = soundTextEn;
+             if(soundSpanZh) soundSpanZh.textContent = soundTextZh;
+         }
+
 
         // Event listener for language select change
         langSelect.addEventListener('change', function() {
             switchLang(this.value);
         });
 
-        // Initial language switch on page load
+        // Initial language switch and sound button update on page load
         switchLang(savedLang);
+        updateSoundButtonText(); // Ensure sound button text is correct on load
 
-        // --- Iframe Game Loading Logic ---
-        gameLinks.forEach(link => {
-            link.addEventListener('click', function(event) {
-                console.log('Game link clicked:', this.href); // Debug message
-                event.preventDefault(); // Prevent default link navigation
-                const gameUrl = this.href;
 
-                mainSelection.style.display = 'none';
-                gameFrame.style.display = 'block';
-                backButton.style.display = 'block';
-                gameFrame.src = gameUrl;
-                 console.log('Iframe src set to:', gameUrl); // Debug message
-            });
+        // --- Removed Iframe Game Loading Logic ---
+        // The game links will now perform default browser navigation.
+        // const gameLinks = document.querySelectorAll('#gameList a');
+        // gameLinks.forEach(link => {
+        //     link.addEventListener('click', function(event) {
+        //         event.preventDefault(); // Prevent default link navigation (REMOVED)
+        //         // ... iframe loading logic ... (REMOVED)
+        //     });
+        // });
+        // Removed backButton listener and iframe references
+
+        // Sound Toggle state (kept from previous version)
+        let soundEnabled = localStorage.getItem("soundEnabled") !== "false"; // Default to true, but respect saved false
+
+        q("#soundToggle").addEventListener("click", () => {
+            soundEnabled = !soundEnabled;
+            localStorage.setItem("soundEnabled", soundEnabled); // Save sound preference
+            updateSoundButtonText(); // Update button text
         });
 
-        backButton.addEventListener('click', function() {
-             console.log('Back button clicked'); // Debug message
-            gameFrame.style.display = 'none';
-            gameFrame.src = 'about:blank'; // Clear iframe content
-            backButton.style.display = 'none';
-            mainSelection.style.display = 'block';
-        });
+        // Ensure sound button is disabled on this index page
+         soundToggleButton.disabled = true;
 
-        // Disable sound toggle on index page as sound is handled within iframed games
-        soundToggleButton.disabled = true; // Or remove this button if not needed in index
-
-         // Ensure the main selection is visible on initial load (defensive check)
-         // Removed this defensive check as it might interfere if something else is hiding it.
-         // Let's rely on the initial HTML/CSS state.
-         // mainSelection.style.display = 'block';
-         // gameFrame.style.display = 'none';
-         // backButton.style.display = 'none';
-
-          console.log('Initial script execution finished.'); // Debug message
     </script>
 </body>
 </html>
