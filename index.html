@@ -1,272 +1,178 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chan Sir's Math Game Hub</title>
+    <title>陳sir的心算遊戲</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
+        html, body {
+            height: 100%;
             margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-            color: #333;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .header-controls {
-            text-align: right;
-            margin-bottom: 15px;
-            width: 100%;
-            max-width: 700px; /* Match container width */
-        }
-        .header-controls span,
-        .header-controls select,
-        .header-controls button {
-            font-size: 1em;
-            margin-left: 10px;
-            vertical-align: middle;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
         }
         .container {
-            max-width: 700px;
-            margin: auto;
-            background: #fff;
-            padding: 30px 25px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            box-sizing: border-box; /* Include padding in width */
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .header {
+            height: 10%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+        }
+        .title-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         h1 {
-            color: #333;
-            margin: 0 0 20px 0; /* Adjust margin */
-            display: flex; /* Use flexbox to align items */
-            align-items: center; /* Vertically center items */
-            justify-content: center; /* Center items horizontally */
-            font-size: 2em; /* Adjust size */
+            font-size: 2em;
+            margin: 0;
+            display: flex;
+            align-items: center;
         }
         h1 img {
-            height: 40px; /* Adjust size as needed */
-            margin-right: 10px; /* Space between image and text */
-            vertical-align: middle; /* Ensure vertical alignment */
+            height: 1.5em;
+            margin-right: 5px;
         }
-        #gameList {
-            list-style: none;
-            padding: 0;
-            display: flex; /* Use flexbox for grid-like layout */
-            flex-wrap: wrap; /* Allow items to wrap */
-            justify-content: center; /* Center game buttons */
-            gap: 20px; /* Space between items */
+        h1 span:nth-child(2) { color: #FF5252; } /* 陳 - 紅色 */
+        h1 span:nth-child(3) { color: #FF9800; } /* s - 橙色 */
+        h1 span:nth-child(4) { color: #FF9800; } /* i - 橙色 */
+        h1 span:nth-child(5) { color: #FF9800; } /* r - 橙色 */
+        h1 span:nth-child(6) { color: #FFD600; } /* 的 - 黃色 */
+        h1 span:nth-child(7) { color: #4CAF50; } /* 心 - 綠色 */
+        h1 span:nth-child(8) { color: #2196F3; } /* 算 - 藍色 */
+        h1 span:nth-child(9) { color: #9C27B0; } /* 遊 - 紫色 */
+        h1 span:nth-child(10) { color: #E91E63; } /* 戲 - 粉紅色 */
+        .home-button {
+            font-size: 1.5em;
+            cursor: pointer;
+            margin-left: 15px;
         }
-        #gameList li {
-            margin: 0; /* Remove default list item margin */
-            width: 180px; /* Adjust size of each game button container */
-            text-align: center;
+        .content {
+            height: 90%;
+            width: 100%;
         }
-        #gameList a {
-            display: flex; /* Flex for image and text alignment */
-            flex-direction: column; /* Stack image and text */
-            align-items: center; /* Center content */
-            padding: 0; /* Remove padding from the link */
-            background-color: transparent; /* No background for the link itself */
-            color: #333; /* Text color */
-            text-decoration: none;
-            border-radius: 8px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
-         #gameList a:hover {
-            background-color: transparent; /* No background on hover */
-            transform: translateY(-5px); /* Slight lift effect */
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
-        }
-
-        #gameList img {
-            width: 100%; /* Make image fill the container width */
-            height: 150px; /* Set a fixed height for images */
-            object-fit: cover; /* Cover the area without distorting aspect ratio */
-            border: 3px solid #007bff; /* Add a border */
-            border-radius: 8px; /* Match container border radius */
-            display: block; /* Remove extra space below image */
-        }
-
-        #gameList a:hover img {
-             border-color: #0056b3; /* Change border color on hover */
-        }
-
-        .game-title {
-            margin-top: 8px; /* Space between image and text */
-            font-size: 1em;
-            font-weight: bold;
-            color: #007bff; /* Text color */
-        }
-
-         /* Language specific display */
-        .lang-en { display: inline; }
-        .lang-zh { display: none; }
-        body.lang-zh .lang-en { display: none; }
-        body.lang-zh .lang-zh { display: inline; }
-
-        /* Removed iframe and back button styles as they are no longer used */
-        /*
-        iframe { display: none; ... }
-        #backButton { display: none; ... }
-        */
     </style>
 </head>
 <body>
-     <div class="header-controls">
-        🌐 <span id="langLabel_en" class="lang-en">Language:</span><span id="langLabel_zh" class="lang-zh">語言:</span>
-        <select id="langSelect" style="font-size: 1em" aria-label="Select language">
-            <option value="en">English</option>
-            <option value="zh">繁體中文</option>
-        </select>
-        🔊 <button id="soundToggle" disabled>
-             <span class="lang-en">Sound: On</span>
-             <span class="lang-zh">音效: 開</span>
-         </button>
-    </div>
-
-    <div id="mainGameSelection" class="container">
-        <h1>
-            <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" alt="Chan Sir Image">
-            <span class="lang-en">Chan Sir's Math Game Hub</span>
-            <span class="lang-zh">陳sir數學遊戲中心</span>
-        </h1>
-        <p>
-            <span class="lang-en">Choose a game to play!</span>
-            <span class="lang-zh">請選擇一個遊戲開始玩！</span>
-        </p>
-        <ul id="gameList">
-            <li>
-                <a href="singledigit.html">
-                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game1.png" alt="Single Digit Game 1">
-                    <span class="game-title">
-                        <span class="lang-en">Single Digit: Super Speedy Sums Splash (1 min)</span>
-                        <span class="lang-zh">個位數加法: 超級快速加法遊戲 (1 分鐘)</span>
-                    </span>
-                </a>
-            </li>
-            <li>
-                <a href="singledigit.html#game2">
-                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game2.png" alt="Single Digit Game 2">
-                     <span class="game-title">
-                        <span class="lang-en">Single Digit: One Hundred Rush (to 100 points)</span>
-                        <span class="lang-zh">個位數加法: 最快一百分 (到 100 分)</span>
-                    </span>
-                </a>
-            </li>
-            <li>
-                <a href="2digits_h.html">
-                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game3.png" alt="2 Digits Horizontal Game 1">
-                     <span class="game-title">
-                        <span class="lang-en">2 Digits (Horiz): Super Speedy Sums Splash (1 min)</span>
-                        <span class="lang-zh">兩位數加法 (橫式): 超級快速加法遊戲 (1 分鐘)</span>
-                    </span>
-                </a>
-            </li>
-            <li>
-                <a href="2digits_h.html#game4">
-                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game4.png" alt="2 Digits Horizontal Game 2">
-                     <span class="game-title">
-                        <span class="lang-en">2 Digits (Horiz): One Hundred Rush (to 100 points)</span>
-                        <span class="lang-zh">兩位數加法 (橫式): 最快一百分 (到 100 分)</span>
-                    </span>
-                </a>
-            </li>
-            <li>
-                <a href="2digits_v.html">
-                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game5.png" alt="2 Digits Vertical Game 1">
-                     <span class="game-title">
-                        <span class="lang-en">2 Digits (Vertical): Super Speedy Sums Splash (1 min)</span>
-                        <span class="lang-zh">兩位數加法 (直式): 超級快速加法遊戲 (1 分鐘)</span>
-                    </span>
-                </a>
-            </li>
-            <li>
-                <a href="2digits_v.html#game4">
-                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game6.png" alt="2 Digits Vertical Game 2">
-                     <span class="game-title">
-                        <span class="lang-en">2 Digits (Vertical): One Hundred Rush (to 100 points)</span>
-                        <span class="lang-zh">兩位數加法 (直式): 最快一百分 (到 100 分)</span>
-                    </span>
-                </a>
-            </li>
-        </ul>
+    <div class="container">
+        <div class="header">
+            <div class="title-container">
+                <h1>
+                    <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/chansir.png" alt="Chan Sir Icon" onerror="this.style.display='none'">
+                    <span>陳</span><span>s</span><span>i</span><span>r</span><span>的</span><span>心</span><span>算</span><span>遊</span><span>戲</span>
+                </h1>
+                <div class="home-button" onclick="document.getElementById('gameFrame').srcdoc = initialContent;">🏠</div>
+            </div>
+        </div>
+        <div class="content">
+            <iframe id="gameFrame" name="gameFrame"></iframe>
+        </div>
     </div>
 
     <script>
-        // Language and Sound Toggle Logic (Kept from previous version)
-        const langSelect = document.getElementById('langSelect');
-        const soundToggleButton = document.getElementById('soundToggle');
+        const initialContent = `
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    text-align: center;
+                    margin: 0;
+                    padding: 20px;
+                    background-color: #ffffff;
+                }
+                .button-container {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 20px;
+                }
+                .button-row {
+                    display: flex;
+                    justify-content: center;
+                    gap: 20px;
+                }
+                .game-button {
+                    width: 150px;
+                    height: 150px;
+                    cursor: pointer;
+                    transition: transform 0.2s;
+                }
+                .game-button:hover {
+                    transform: scale(1.1);
+                }
+                .game-button.fallback {
+                    width: 150px;
+                    height: 150px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background-color: #ddd;
+                    color: #333;
+                    text-decoration: none;
+                    font-size: 14px;
+                    border-radius: 5px;
+                }
+            </style>
+            <div class="button-container">
+                <div class="button-row">
+                    <a href="singledigit.html" target="gameFrame">
+                        <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game1.png" class="game-button" alt="Game 1" onerror="this.outerHTML=\'<a href=\\\'singledigit.html\\\' target=\\\'gameFrame\\\' class=\\\'game-button fallback\\\'>Game 1</a>\'">
+                    </a>
+                    <a href="singledigit.html" target="gameFrame">
+                        <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game2.png" class="game-button" alt="Game 2" onerror="this.outerHTML=\'<a href=\\\'singledigit.html\\\' target=\\\'gameFrame\\\' class=\\\'game-button fallback\\\'>Game 2</a>\'">
+                    </a>
+                </div>
+                <div class="button-row">
+                    <a href="2digits_h.html" target="gameFrame">
+                        <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game3.png" class="game-button" alt="Game 3" onerror="this.outerHTML=\'<a href=\\\'2digits_h.html\\\' target=\\\'gameFrame\\\' class=\\\'game-button fallback\\\'>Game 3</a>\'">
+                    </a>
+                    <a href="2digits_h.html" target="gameFrame">
+                        <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game4.png" class="game-button" alt="Game 4" onerror="this.outerHTML=\'<a href=\\\'2digits_h.html\\\' target=\\\'gameFrame\\\' class=\\\'game-button fallback\\\'>Game 4</a>\'">
+                    </a>
+                </div>
+                <div class="button-row">
+                    <a href="2digits_v.html" target="gameFrame">
+                        <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game5.png" class="game-button" alt="Game 5" onerror="this.outerHTML=\'<a href=\\\'2digits_v.html\\\' target=\\\'gameFrame\\\' class=\\\'game-button fallback\\\'>Game 5</a>\'">
+                    </a>
+                    <a href="2digits_v.html" target="gameFrame">
+                        <img src="https://raw.githubusercontent.com/watson9999/math-game-audio/main/game6.png" class="game-button" alt="Game 6" onerror="this.outerHTML=\'<a href=\\\'2digits_v.html\\\' target=\\\'gameFrame\\\' class=\\\'game-button fallback\\\'>Game 6</a>\'">
+                    </a>
+                </div>
+            </div>
+        `;
+        document.getElementById('gameFrame').srcdoc = initialContent;
 
-        // Initialize language based on localStorage or default to English
-        const savedLang = localStorage.getItem("lang") || "en";
-        document.body.classList.add(`lang-${savedLang}`);
-        langSelect.value = savedLang;
+        const title = document.getElementById('title');
+        const colors = [
+            '#FF5252', // 陳
+            '#FF9800', // s
+            '#FF9800', // i
+            '#FF9800', // r
+            '#FFD600', // 的
+            '#4CAF50', // 心
+            '#2196F3', // 算
+            '#9C27B0', // 遊
+            '#E91E63'  // 戲
+        ];
+        let colorIndex = 0;
 
-        // Language switching function
-        function switchLang(lang) {
-            document.body.classList.remove('lang-en', 'lang-zh');
-            document.body.classList.add(`lang-${lang}`);
-            localStorage.setItem("lang", lang);
-             // The sound toggle button's text is also updated via CSS display based on body class
-            // Update sound button text explicitly after language switch
-             updateSoundButtonText();
-        }
-
-        // Function to update the sound button text based on current language and state
-         function updateSoundButtonText() {
-             const lang = langSelect.value; // Use the current selected language
-             const soundState = localStorage.getItem("soundEnabled") === "true"; // Get current sound state
-             const soundTextEn = `Sound: ${soundState ? "On" : "Off"}`;
-             const soundTextZh = `音效: ${soundState ? "開" : "關"}`;
-
-             // Update the spans inside the sound button
-             const soundSpanEn = soundToggleButton.querySelector('#soundToggle_en');
-             const soundSpanZh = soundToggleButton.querySelector('#soundToggle_zh');
-
-             if(soundSpanEn) soundSpanEn.textContent = soundTextEn;
-             if(soundSpanZh) soundSpanZh.textContent = soundTextZh;
-         }
-
-
-        // Event listener for language select change
-        langSelect.addEventListener('change', function() {
-            switchLang(this.value);
-        });
-
-        // Initial language switch and sound button update on page load
-        switchLang(savedLang);
-        updateSoundButtonText(); // Ensure sound button text is correct on load
-
-
-        // --- Removed Iframe Game Loading Logic ---
-        // The game links will now perform default browser navigation.
-        // const gameLinks = document.querySelectorAll('#gameList a');
-        // gameLinks.forEach(link => {
-        //     link.addEventListener('click', function(event) {
-        //         event.preventDefault(); // Prevent default link navigation (REMOVED)
-        //         // ... iframe loading logic ... (REMOVED)
-        //     });
-        // });
-        // Removed backButton listener and iframe references
-
-        // Sound Toggle state (kept from previous version)
-        let soundEnabled = localStorage.getItem("soundEnabled") !== "false"; // Default to true, but respect saved false
-
-        q("#soundToggle").addEventListener("click", () => {
-            soundEnabled = !soundEnabled;
-            localStorage.setItem("soundEnabled", soundEnabled); // Save sound preference
-            updateSoundButtonText(); // Update button text
-        });
-
-        // Ensure sound button is disabled on this index page
-         soundToggleButton.disabled = true;
-
+        setInterval(() => {
+            const spans = title.getElementsByTagName('span');
+            for (let i = 0; i < spans.length; i++) {
+                spans[i].style.color = colors[(colorIndex + i) % colors.length];
+            }
+            colorIndex = (colorIndex + 1) % colors.length;
+        }, 3000);
     </script>
 </body>
 </html>
